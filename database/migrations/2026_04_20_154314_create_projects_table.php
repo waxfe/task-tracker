@@ -10,13 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id(); // будет 'id', а не 'user_id'
+        Schema::create('projects', function (Blueprint $table) {
+            $table->id('project_id');
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->timestamp('registration_date')->useCurrent();
-            $table->rememberToken();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('projects');
     }
 };
