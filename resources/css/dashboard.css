@@ -1,0 +1,696 @@
+/* ========== ДАШБОРД ========== */
+
+/* Главный контейнер */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #F5F7FA;
+}
+
+.app-header {
+    background: white;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ========== БОКОВОЕ МЕНЮ ========== */
+.sidebar {
+    width: 280px;
+    background-color: #F3F4F6;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-right: 1px solid #E5E7EB;
+}
+
+.sidebar-logo {
+    margin-bottom: 8px;
+}
+
+.logo-text {
+    color: #265FD0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Пользователь */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 12px;
+}
+
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    background: #265FD0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.user-role {
+    font-size: 12px;
+    color: #64748B;
+}
+
+.settings-icon {
+    color: #94A3B8;
+    transition: color 0.2s;
+}
+
+.settings-icon:hover {
+    color: #265FD0;
+}
+
+/* Секции меню */
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E293B;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-create {
+    background: #2F6FED;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-create:hover {
+    background: #1a5ad1;
+}
+
+/* Список проектов */
+.project-list {
+    list-style: none;
+}
+
+.project-item {
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    /* добавляем отступ между проектами */
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.project-item:hover {
+    background: #E5E7EB;
+}
+
+.project-item.active {
+    background: #265FD0;
+}
+
+.project-item.active a {
+    color: white;
+}
+
+.project-item a {
+    text-decoration: none;
+    color: #1E293B;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Блок с названием проекта и кнопкой настроек */
+.project-info-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #F8FAFC;
+    padding: 8px 16px;
+    border-radius: 40px;
+}
+
+.current-project-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0;
+}
+
+.project-settings-btn {
+    background: none;
+    border: none;
+    color: #64748B;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.project-settings-btn:hover {
+    background: #E2E8F0;
+    color: #265FD0;
+}
+
+.project-settings-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Участники */
+.members-list {
+    list-style: none;
+}
+
+.member-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+}
+
+.member-info {
+    flex: 1;
+}
+
+.member-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1E293B;
+}
+
+.member-role {
+    font-size: 11px;
+    color: #64748B;
+}
+
+/* Кнопка AI */
+.btn-ai {
+    width: 100%;
+    background: #2F6FED;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-ai:hover {
+    background: #1a5ad1;
+}
+
+.empty-message {
+    color: #94A3B8;
+    font-size: 13px;
+    padding: 12px;
+    text-align: center;
+}
+
+/* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Шапка */
+.app-header {
+    background: white;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.project-title h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: #F3F4F6;
+    border-radius: 40px;
+    padding: 8px 16px;
+    width: 400px;
+}
+
+.search-bar i {
+    color: #94A3B8;
+    margin-right: 8px;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.ai-recommendation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #EFF6FF;
+    padding: 8px 16px;
+    border-radius: 40px;
+    color: #265FD0;
+    font-size: 14px;
+}
+
+.logout-form button {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #EF4444;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+
+.logout-form button:hover {
+    opacity: 0.8;
+}
+
+/* Контент */
+.content-wrapper {
+    padding: 24px;
+    flex: 1;
+}
+
+/* Кнопки управления */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-btn:hover {
+    background: #F3F4F6;
+}
+
+.view-btn.active {
+    background: #265FD0;
+    color: white;
+    border-color: #265FD0;
+}
+
+.btn-create-task {
+    background: #2F6FED;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-create-task:hover {
+    background: #1a5ad1;
+}
+
+/* Таблица задач */
+.tasks-table-container {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tasks-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tasks-table th {
+    text-align: left;
+    padding: 16px;
+    background: #F8FAFC;
+    font-weight: 600;
+    color: #1E293B;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.tasks-table td {
+    padding: 16px;
+    border-bottom: 1px solid #E5E7EB;
+    cursor: pointer;
+}
+
+.tasks-table tr:hover {
+    background: #F8FAFC;
+}
+
+.task-name {
+    font-weight: 500;
+    color: #1E293B;
+}
+
+.assignee {
+    display: inline-block;
+    background: #F1F5F9;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-right: 4px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-todo {
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+.status-in_progress {
+    background: #DBEAFE;
+    color: #2563EB;
+}
+
+.status-done {
+    background: #D1FAE5;
+    color: #059669;
+}
+
+.priority-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.priority-low {
+    background: #E5E7EB;
+    color: #6B7280;
+}
+
+.priority-medium {
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+.priority-high {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.overdue {
+    color: #DC2626;
+    font-weight: 500;
+}
+
+.ai-recommend-btn {
+    background: #265FD0;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ai-recommend-btn:hover {
+    background: #1a4ba8;
+}
+
+.no-ai {
+    color: #94A3B8;
+    font-size: 13px;
+}
+
+.empty-table {
+    text-align: center;
+    padding: 40px;
+    color: #94A3B8;
+}
+
+/* ========== КАНБАН ========== */
+.kanban-board {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    align-items: flex-start;
+}
+
+.kanban-column {
+    flex: 1;
+    min-width: 320px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Заголовок колонки */
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #E2E8F0;
+    color: #1E293B;
+}
+
+.kanban-count {
+    background: #E2E8F0;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* Контейнер задач */
+.kanban-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: auto;
+    margin-bottom: 4px;
+    /* уменьшаем отступ снизу */
+}
+
+/* Карточка задачи */
+.kanban-card {
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    border: 1px solid #E2E8F0;
+}
+
+.kanban-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border-color: #CBD5E1;
+}
+
+/* Шапка карточки (название + иконка AI) */
+.kanban-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.card-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1E293B;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.ai-brain-icon {
+    color: #265FD0;
+    font-size: 16px;
+    cursor: help;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+
+.ai-brain-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Футер карточки */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+/* Приоритеты */
+.priority-low {
+    background: #E5E7EB;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6B7280;
+}
+
+.priority-medium {
+    background: #FEF3C7;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #D97706;
+}
+
+.priority-high {
+    background: #FEE2E2;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #DC2626;
+}
+
+.due-date {
+    color: #64748B;
+    font-size: 11px;
+}
+
+.kanban-add-task {
+    width: 100%;
+    background: #F8FAFC;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748B;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.kanban-add-task i {
+    font-size: 14px;
+    color: #64748B;
+    transition: color 0.2s;
+}
+
+.kanban-add-task:hover {
+    background: #2F6FED;
+    color: white;
+}
+
+.kanban-add-task:hover i {
+    color: white;
+}

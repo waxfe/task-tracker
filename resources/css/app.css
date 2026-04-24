@@ -1,3 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* resources/css/app.css */
+/* Импорт всех CSS файлов - используйте правильные относительные пути */
+@import 'auth.css';
+@import 'dashboard.css';
+
+/* Глобальное применение шрифта Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body,
+button,
+input,
+textarea,
+select,
+a {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    background-color: #F5F7FA;
+    min-height: 100vh;
+}

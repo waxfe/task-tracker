@@ -13,6 +13,13 @@ class DashboardController extends Controller
         $projects = $user->projects;
         $tasks = $user->tasks;
 
-        return view('dashboard', compact('user', 'projects', 'tasks'));
+        $selectedProjectId = request()->input('project_id', $projects->first()?->project_id);
+        $selectedProject = $projects->find($selectedProjectId);
+
+        $tasks = $selectedProject ? $selectedProject->tasks()->with('users', 'aiInteractions')->get() : collect();
+
+        $viewMode = request()->input('view', 'list');
+
+        return view('dashboard.index', compact('user', 'projects', 'selectedProject', 'tasks', 'viewMode'));
     }
 }
