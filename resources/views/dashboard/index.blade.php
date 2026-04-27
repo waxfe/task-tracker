@@ -15,7 +15,7 @@
     
     <div class="project-info-header">
         <h2 class="current-project-name">{{ $selectedProject->name ?? 'Выберите проект' }}</h2>
-        <button class="project-settings-btn" onclick="openProjectSettings({{ $selectedProject->project_id ?? 'null' }})" @if(!$selectedProject) disabled @endif>
+        <button class="project-settings-btn" onclick="openProjectSettings({{ $selectedProject->project_id ?? 'null' }})">
             <i class="fas fa-cog"></i>
         </button>
     </div>

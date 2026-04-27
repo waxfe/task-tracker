@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,4 +48,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'delete'])->name('profile.delete');
+
+    // Проект
+    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+    Route::delete('/projects/{project}', [ProjectController::class, 'delete'])->name('projects.delete');
+    Route::post('/projects/{project}/leave', [ProjectController::class, 'leave'])->name('projects.leave');
+
+    // Участники проекта
+    Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
+    Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'deleteMember'])->name('projects.members.delete');
+    Route::patch('/projects/{project}/members/{user}/role', [ProjectController::class, 'changeRole'])->name('projects.members.role');
 });

@@ -20,8 +20,12 @@ window.openCreateTaskModal = function () {
 
 // Открыть создание проекта
 window.openCreateProjectModal = function () {
-    // TODO: реализовать модальное окно создания проекта
-    alert('Создание проекта (будет реализовано)');
+    const modal = document.getElementById('createProjectModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    } else {
+        alert('Модальное окно не найдено');
+    }
 };
 
 // Открыть чат с AI

@@ -54,7 +54,13 @@
                         <i class="fas fa-user-circle"></i>
                         <div class="member-info">
                             <span class="member-name">{{ $member->name }}</span>
-                            <span class="member-role">{{ $member->pivot->role_in_project }}</span>
+                            <span class="member-role">
+                                @if($member->pivot->role_in_project == 'owner')
+                                    Владелец
+                                @else
+                                    Участник
+                                @endif
+                            </span>
                         </div>
                     </li>
                 @endforeach

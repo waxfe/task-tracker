@@ -1,0 +1,492 @@
+/* ========== СТРАНИЦА ПРОЕКТА ========== */
+.project-page {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Заголовок проекта */
+.project-header {
+    margin-bottom: 24px;
+}
+
+.project-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.project-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0;
+}
+
+.project-actions {
+    display: flex;
+    align-items: center;
+}
+
+.project-menu-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #94A3B8;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.project-menu-btn:hover {
+    background: #F1F5F9;
+}
+
+/* Описание проекта */
+.project-description-wrapper {
+    position: relative;
+}
+
+.project-description {
+    padding: 12px;
+    background: #F8FAFC;
+    border-radius: 12px;
+    color: #475569;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.project-description.empty {
+    color: #94A3B8;
+    font-style: italic;
+}
+
+.project-description:hover {
+    background: #F1F5F9;
+}
+
+.project-description-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #265FD0;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    resize: none;
+}
+
+.save-description-btn {
+    margin-top: 8px;
+    background: #2F6FED;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.section-divider {
+    margin: 32px 0;
+    border: none;
+    height: 0.5px;
+    background: #000000;
+}
+
+/* Карточки статистики */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: #3A507B;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
+.stat-card .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.stat-card .stat-label {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.overdue-card {
+    background: #DC2626;
+}
+
+/* Графики */
+/* Графики */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1E293B;
+}
+
+/* Контейнер для диаграммы статусов - фиксированный размер */
+.donut-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 220px;
+    margin: 0 auto;
+}
+
+/* Уменьшаем canvas для диаграммы статусов */
+#statusDonutChart {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+/* Остальные графики - уменьшенная высота */
+#completionLineChart,
+#userLoadBarChart,
+#priorityBarChart {
+    max-height: 220px;
+    width: 100%;
+}
+
+/* Легенда */
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+    font-size: 12px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.legend-color.todo {
+    background: #F59E0B;
+}
+
+.legend-color.progress {
+    background: #3B82F6;
+}
+
+.legend-color.done {
+    background: #10B981;
+}
+
+/* AI анализ */
+.ai-analysis-section {
+    margin: 40px 0;
+}
+
+.ai-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.ai-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.refresh-ai-btn {
+    background: #2F6FED;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.refresh-ai-btn:hover {
+    background: #1a5ad1;
+}
+
+.ai-subtitle {
+    color: #64748B;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.ai-insights-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.ai-insight {
+    background: #5C88DE;
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    line-height: 1.5;
+}
+
+.loading-spinner {
+    grid-column: span 2;
+    text-align: center;
+    padding: 40px;
+    color: #64748B;
+}
+
+/* Участники */
+.members-section {
+    margin-top: 40px;
+}
+
+.members-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.members-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.add-member-btn {
+    background: #2F6FED;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.member-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.member-avatar {
+    font-size: 48px;
+    color: #94A3B8;
+}
+
+.member-info {
+    flex: 1;
+}
+
+.member-name {
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.role-select {
+    margin-top: 4px;
+    padding: 4px 8px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: white;
+    font-size: 12px;
+}
+
+.remove-member-btn {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.remove-member-btn:hover {
+    color: #DC2626;
+}
+
+/* Утилиты */
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-insights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Подсветка поля при ошибке */
+.error-highlight {
+    border: 2px solid #DC2626 !important;
+    background-color: #FEF2F2 !important;
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Сообщение об ошибке */
+.field-error-message {
+    background-color: #FEF2F2;
+    border-left: 3px solid #DC2626;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+/* Сообщение об успехе */
+.field-success-message {
+    background-color: #ECFDF5;
+    border-left: 3px solid #059669;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+/* Для не-владельца — описание только для чтения */
+.project-description:not([onclick]) {
+    cursor: default;
+    background: #F8FAFC;
+}
+
+.project-description:not([onclick]):hover {
+    background: #F8FAFC;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* Выпадающее меню */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    z-index: 100;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.dropdown-menu.hidden {
+    display: none;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1E293B;
+    text-align: left;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #F1F5F9;
+}
+
+.dropdown-item.delete {
+    color: #DC2626;
+}
+
+.dropdown-item.delete:hover {
+    background: #FEF2F2;
+}
+
+/* Сообщение при отсутствии данных */
+.no-data-message {
+    grid-column: span 2;
+    text-align: center;
+    padding: 60px 20px;
+    background: #F8FAFC;
+    border-radius: 20px;
+    color: #64748B;
+}
+
+.no-data-message i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #94A3B8;
+}
+
+.no-data-message p {
+    font-size: 16px;
+}
