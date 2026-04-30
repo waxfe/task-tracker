@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Dom\Comment;
+use App\Models\Comment as ModelsComment;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
@@ -26,7 +26,7 @@ class Task extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'task_id');
+        return $this->hasMany(ModelsComment::class, 'task_id');
     }
 
     public function histories()

@@ -136,7 +136,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function leave(Request $request, Project $project)
+    public function leave(Project $project)
     {
         $user = Auth::user();
 
@@ -280,5 +280,13 @@ class ProjectController extends Controller
             'success' => true,
             'message' => 'Роль изменена.'
         ]);
+    }
+
+    public function getUsers(Project $project)
+    {
+        return response()->json($project->users->map(fn($u) => [
+            'id' => $u->id,
+            'name' => $u->name,
+        ]));
     }
 }

@@ -1,0 +1,915 @@
+/* resources/css/task.css */
+
+.task-modal-container {
+    width: 950px;
+    max-width: 90vw;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.task-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 0 24px;
+}
+
+.task-title-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.task-title-section h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.task-title-display {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1E293B;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.task-title-display:hover {
+    background: #F1F5F9;
+}
+
+.task-title-input {
+    font-size: 20px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border: 1px solid #2F6FED;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* КРУЖОК, а не овал */
+.task-priority-badge {
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.task-priority-badge.priority-high {
+    background: #DC2626;
+    box-shadow: 0 0 0 2px #FEE2E2;
+}
+
+.task-priority-badge.priority-medium {
+    background: #F59E0B;
+    box-shadow: 0 0 0 2px #FEF3C7;
+}
+
+.task-priority-badge.priority-low {
+    background: #10B981;
+    box-shadow: 0 0 0 2px #D1FAE5;
+}
+
+.task-status {
+    background: #E2E8F0;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.task-created-date {
+    font-size: 12px;
+    color: #64748B;
+    margin-left: 8px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #94A3B8;
+}
+
+.task-modal-divider {
+    margin: 16px 24px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+/* СЕТКА: описание + комментарии (слева) и атрибуты (справа) */
+.task-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 24px;
+    padding: 0 24px;
+}
+
+.task-left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.task-field-group label {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+    color: #1E293B;
+}
+
+/* Описание задачи — сохраняем стили при редактировании */
+.task-description-text {
+    background: #F8FAFC;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #1E293B;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.task-description-text:hover {
+    background: #F1F5F9;
+    border-color: #CBD5E1;
+}
+
+.task-description-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #2F6FED;
+    border-radius: 12px;
+    font-size: 14px;
+    resize: none;
+    background: white;
+    font-family: inherit;
+}
+
+.task-description-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.1);
+}
+
+/* РАЗДЕЛИТЕЛЬ между описанием/комментариями и атрибутами */
+.task-right-column {
+    border-left: 1px solid #E2E8F0;
+    padding-left: 20px;
+}
+
+.task-right-column h4 {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* АТРИБУТЫ — единый стиль, без лишних пустот */
+.task-attributes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.attr-label {
+    width: 110px;
+    font-size: 13px;
+    color: #64748B;
+    flex-shrink: 0;
+}
+
+.attr-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.assignee-field,
+.task-select-wrapper {
+    flex: 1;
+    /* Занимает всё оставшееся пространство */
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    /* Важно, чтобы flex-контейнер не распирало текстом */
+}
+
+/* сам select */
+.assignee-field .task-select {
+    width: 100%;
+    padding-right: 36px;
+    /* место под кнопку */
+}
+
+/* кнопка поверх */
+.assignee-field .icon-add {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 6px;
+    background: #2F6FED;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Только строка с кнопкой */
+.attr-row.with-button {
+    grid-template-columns: 110px 1fr 32px;
+}
+
+.task-date-input {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1E293B;
+    background-color: white;
+    box-sizing: border-box;
+    /* Это уже есть, но проверьте */
+
+    /* Добавляем это, чтобы убрать лишние отступы в Chrome */
+    max-width: 100%;
+    flex: 1;
+}
+
+.task-select {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1E293B;
+    background-color: white;
+    box-sizing: border-box;
+
+    /* Сбрасываем стандартный вид и добавляем свою иконку */
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748B'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px;
+    padding-right: 30px;
+    /* Отступ справа под иконку */
+}
+
+
+
+/* Для поля исполнителя убираем иконку, так как там синяя кнопка '+' */
+#taskAssigneeSelect {
+    background-image: none;
+    padding-right: 40px;
+}
+
+.task-select-wrapper,
+.assignee-field,
+.task-date-input {
+    flex: 1;
+    min-width: 0;
+    /* Позволяет элементу сжиматься внутри flex */
+}
+
+.task-select,
+#taskCreatedAtStatic {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1E293B;
+    background-color: white;
+    box-sizing: border-box;
+    /* Чтобы padding не увеличивал ширину */
+
+    /* Исправляем обрезание текста */
+    appearance: none;
+    /* Убираем дефолтные стрелки браузера, если мешают */
+    -webkit-appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}
+
+.icon-add {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    bottom: 4px;
+    /* Делаем её четко внутри рамки селекта */
+    width: 28px;
+    height: 28px;
+    background: #2F6FED !important;
+    /* Насильно ставим фон */
+    color: white !important;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    line-height: 1;
+}
+
+.attr-row.readonly {
+    align-items: center;
+    /* Центрирует label и значение по вертикали */
+    min-height: 36px;
+    /* Чтобы строка была такой же высоты, как и соседние с инпутами */
+}
+
+/* Общий стиль для "кнопок" атрибутов (селекты и дата) */
+.task-attributes .task-select,
+.task-attributes .task-date-input {
+    color: #000000;
+    font-weight: 500;
+    background-color: #F0F7FF;
+    /* Очень светлый синий фон, чтобы походило на кнопку */
+    border: 1px solid #265FD0;
+    /* Синяя рамка */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Эффект при наведении, как у кнопки */
+.task-attributes .task-select:hover,
+.task-attributes .task-date-input:hover {
+    background-color: #E0EFFF;
+    border-color: #1a5ad1;
+}
+
+/* Возвращаем иконку выпадающего списка, но делаем её синей */
+.task-attributes .task-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232F6FED'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px;
+    padding-right: 30px;
+}
+
+/* Опции внутри выпадающего списка оставляем стандартными для читаемости */
+.task-attributes option {
+    background-color: white;
+    color: #1E293B;
+}
+
+#taskCreatedAtStatic {
+    border-color: transparent;
+    background: transparent;
+    padding-left: 0;
+    font-weight: 500;
+
+    /* Добавляем эти свойства для выравнивания */
+    height: auto;
+    /* Сбрасываем фиксированную высоту */
+    line-height: 1.2;
+    /* Устанавливаем нормальную высоту строки */
+    display: flex;
+    align-items: center;
+    margin-top: 0;
+}
+
+
+
+.task-select {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Цвет текста приоритета */
+.priority-select option[value="high"] {
+    color: #DC2626;
+}
+
+.priority-select option[value="medium"] {
+    color: #F59E0B;
+}
+
+.priority-select option[value="low"] {
+    color: #10B981;
+}
+
+.task-assignee-wrapper {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.task-assignee-wrapper select {
+    flex: 1;
+}
+
+/* Фирменный цвет для календаря */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.3);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(0) sepia(1) hue-rotate(200deg) brightness(0.8);
+}
+
+/* НИЖНЯЯ СЕТКА: AI (скролл) + история (без скролла) */
+.task-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 0 24px 24px 24px;
+}
+
+.task-ai-section,
+.task-history-section {
+    background: #F8FAFC;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* AI-рекомендации — скролл */
+.ai-recommendations-list {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* История — без скролла (растянется) */
+.history-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ai-card {
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    position: relative;
+    font-size: 13px;
+}
+
+.ai-menu {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    cursor: pointer;
+    color: #94A3B8;
+}
+
+.history-item {
+    font-size: 12px;
+    border-left: 2px solid #CBD5E1;
+    padding-left: 10px;
+}
+
+.history-user {
+    font-weight: 600;
+}
+
+.history-date {
+    font-size: 10px;
+    color: #64748B;
+}
+
+/* ================================================= КОММЕНТАРИИ =========================================== */
+.comments-list-wrapper {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: visible;
+    /* dropdown не обрезается */
+    padding-bottom: 4px;
+}
+
+
+.comment-item {
+    background: #F8FAFC;
+    padding: 10px;
+    border-radius: 12px;
+    position: relative;
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.comment-user {
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.comment-date {
+    font-size: 10px;
+    color: #64748B;
+}
+
+.comment-menu {
+    margin-left: auto;
+    cursor: pointer;
+    color: #94A3B8;
+}
+
+.comment-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 12px;
+}
+
+/* Новая область комментария */
+.new-comment-area {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.new-comment-area textarea {
+    flex: 1;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #CBD5E1;
+    resize: none;
+    font-size: 13px;
+}
+
+.btn-sm {
+    background: #2F6FED;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-sm:hover {
+    background: #1a5ad1;
+}
+
+.hidden {
+    display: none;
+}
+
+.placeholder-text {
+    color: #94A3B8;
+    text-align: center;
+    padding: 16px;
+    font-size: 13px;
+}
+
+/* Выпадающее меню комментария */
+.comment-menu-wrapper {
+    position: relative;
+    margin-left: auto;
+}
+
+.comment-menu-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #94A3B8;
+    padding: 0 8px;
+    border-radius: 6px;
+}
+
+.comment-menu-btn:hover {
+    background: #E2E8F0;
+    color: #1E293B;
+}
+
+.comment-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 140px;
+    z-index: 100;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.comment-dropdown.hidden {
+    display: none;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    font-size: 13px;
+    color: #1E293B;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #F1F5F9;
+}
+
+.dropdown-item.delete-comment {
+    color: #DC2626;
+}
+
+.dropdown-item.delete-comment:hover {
+    background: #FEF2F2;
+}
+
+/* Выпадающее меню комментария */
+.comment-menu-wrapper {
+    position: relative;
+    margin-left: auto;
+}
+
+.comment-menu-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #94A3B8;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.comment-menu-btn:hover {
+    background: #E2E8F0;
+    color: #1E293B;
+}
+
+.comment-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+    z-index: 100;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.comment-dropdown.hidden {
+    display: none;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    font-size: 13px;
+    color: #1E293B;
+    transition: background 0.2s;
+}
+
+.dropdown-item i {
+    width: 18px;
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background: #F1F5F9;
+}
+
+.dropdown-item.delete-comment {
+    color: #DC2626;
+}
+
+.dropdown-item.delete-comment:hover {
+    background: #FEF2F2;
+}
+
+/* ================== ИЗМЕНЕНИЕ КОММЕНТАРИЯ ================*/
+.edit-comment-textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #2F6FED;
+    border-radius: 10px;
+    font-size: 13px;
+    resize: none;
+    margin-bottom: 8px;
+}
+
+.save-comment-btn {
+    margin-top: 4px;
+}
+
+/* ===================== УДАЛЕНИЕ КОММЕНТАРИЯ ==================== */
+.btn-danger {
+    background: #DC2626;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+
+
+
+/*============================ ИСТОРИЯ ============================= */
+.task-history-section {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.history-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ====================== СОЗДАНИЕ ЗАДАЧИ ===================================
+/* Стили для полей ввода в модалке создания задачи */
+.task-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #CBD5E1;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.task-input:focus {
+    outline: none;
+    border-color: #2F6FED;
+    box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.1);
+}
+
+/* Для textarea в модалке создания */
+.task-field-group textarea.task-input {
+    resize: none;
+    min-height: 80px;
+}
+
+/* Специфичные стили для модалки создания (если отличаются) */
+#createTaskModal .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #E2E8F0;
+    margin-top: 16px;
+}
+
+#createTaskModal .btn-secondary {
+    background: #F1F5F9;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #475569;
+}
+
+#createTaskModal .btn-secondary:hover {
+    background: #E2E8F0;
+}
+
+#createTaskModal .btn-primary {
+    background: #2F6FED;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+#createTaskModal .btn-primary:hover {
+    background: #1a5ad1;
+}
+
+.priority-select option[value="high"] {
+    color: #DC2626;
+}
+
+.priority-select option[value="medium"] {
+    color: #F59E0B;
+}
+
+.priority-select option[value="low"] {
+    color: #10B981;
+}
+
+.selected-users-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.selected-user-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+
+    padding: 6px 10px;
+    font-size: 13px;
+    color: #334155;
+
+    transition: all 0.2s;
+}
+
+.selected-user-tag:hover {
+    background: #E2E8F0;
+}
+
+.selected-user-tag .remove-user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+    background: #CBD5E1;
+
+    font-size: 11px;
+    color: white;
+
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+}
+
+.selected-user-tag .remove-user:hover {
+    background: #EF4444;
+}
+
+.assignee-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* было 6 → чуть больше */
+}

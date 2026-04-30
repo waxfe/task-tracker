@@ -8,7 +8,15 @@
     <title>TaskAssist - @yield('title')</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/dashboard.js', 'resources/css/project.css', 'resources/js/project.js'])
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js',
+        'resources/js/dashboard.js',
+        'resources/css/project.css',
+        'resources/js/project.js',
+        'resources/css/task.css',
+        'resources/js/task.js'
+    ])
 </head>
 
 <body>
@@ -27,6 +35,8 @@
     @include('projects.modals.confirm-delete-member')
     @include('projects.modals.confirm-delete-project')
     @include('projects.modals.confirm-leave-project')
+    @include('tasks.task-modal')
+    @include('tasks.create-task-modal')
 </body>
 
 </html>

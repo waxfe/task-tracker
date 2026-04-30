@@ -7,16 +7,8 @@ window.setView = function (view) {
     window.location.href = url.toString();
 };
 
-// Открыть карточку задачи
-window.openTaskCard = function (taskId) {
-    window.location.href = `/tasks/${taskId}`;
-};
-
 // Открыть создание задачи
-window.openCreateTaskModal = function () {
-    // TODO: реализовать модальное окно создания задачи
-    alert('Создание задачи (будет реализовано)');
-};
+
 
 // Открыть создание проекта
 window.openCreateProjectModal = function () {
@@ -61,8 +53,24 @@ window.openProjectSettings = function (projectId) {
     }
 };
 
-// Открыть создание задачи с предвыбранным статусом
 window.openCreateTaskModalWithStatus = function (status) {
-    // TODO: реализовать модальное окно с передачей статуса
-    alert('Создание задачи со статусом: ' + status);
+    window.presetTaskStatus = status;
+    openCreateTaskModal();
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Открытие карточки задачи (через делегирование)
+    document.querySelector('.tasks-table tbody')?.addEventListener('click', function (e) {
+        const row = e.target.closest('tr[data-task-id]');
+        if (row && !e.target.closest('.delete-task-btn')) {
+            openTaskCard(row.dataset.taskId);
+        }
+    });
+
+    document.querySelector('.kanban-board')?.addEventListener('click', function (e) {
+        const card = e.target.closest('.kanban-card[data-task-id]');
+        if (card && !e.target.closest('.delete-task-btn')) {
+            openTaskCard(card.dataset.taskId);
+        }
+    });
+});

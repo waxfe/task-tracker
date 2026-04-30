@@ -5,9 +5,11 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,9 +57,24 @@ Route::middleware('auth')->group(function () {
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'delete'])->name('projects.delete');
     Route::post('/projects/{project}/leave', [ProjectController::class, 'leave'])->name('projects.leave');
+    Route::get('/projects/{project}/users', [ProjectController::class, 'getUsers']);
 
     // Участники проекта
     Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
     Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'deleteMember'])->name('projects.members.delete');
     Route::patch('/projects/{project}/members/{user}/role', [ProjectController::class, 'changeRole'])->name('projects.members.role');
+
+    // Задача
+    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+    // Комментарии
+    Route::prefix('tasks/{task}/comments')->group(function () {
+        Route::post('/', [CommentController::class, 'store'])->name('comments.store');
+        Route::put('/{comment}', [CommentController::class, 'update'])->name('comments.update');
+        Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    });
+
 });

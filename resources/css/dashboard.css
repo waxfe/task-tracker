@@ -468,6 +468,7 @@
     color: #059669;
 }
 
+/* Приоритеты — для дашборда */
 .priority-badge {
     display: inline-block;
     padding: 4px 12px;
@@ -478,17 +479,17 @@
 
 .priority-low {
     background: #E5E7EB;
-    color: #6B7280;
+    color: #4B5563;
 }
 
 .priority-medium {
     background: #FEF3C7;
-    color: #D97706;
+    color: #B45309;
 }
 
 .priority-high {
     background: #FEE2E2;
-    color: #DC2626;
+    color: #B91C1C;
 }
 
 .overdue {
@@ -631,12 +632,12 @@
 
 /* Приоритеты */
 .priority-low {
-    background: #E5E7EB;
+    background: #D1FAE5;
+    color: #169773;
     padding: 2px 10px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 500;
-    color: #6B7280;
 }
 
 .priority-medium {
@@ -693,4 +694,25 @@
 
 .kanban-add-task:hover i {
     color: white;
+}
+
+.delete-task-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #94A3B8;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.delete-task-btn:hover {
+    color: #DC2626;
+}
+
+.kanban-card-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
 }
