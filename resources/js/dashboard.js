@@ -1,76 +1,154 @@
-// resources/js/dashboard.js
+// resources/js/dashboard-optimized.js
 
-// Переключение между списком и канбаном
-window.setView = function (view) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('view', view);
-    window.location.href = url.toString();
-};
+// ========== УНИВЕРСАЛЬНЫЙ МЕНЕДЖЕР ТАБЛИЦ ==========
+class TaskTableManager {
+    constructor() {
+        this.state = {
+            sort: { field: 'updated_at', direction: 'desc' },
+            search: '',
+            currentView: 'list'
+        };
 
-// Открыть создание задачи
+        this.elements = {
+            tbody: () => document.querySelector('.tasks-table tbody'),
+            search: () => document.getElementById('globalSearch')
+        };
 
-
-// Открыть создание проекта
-window.openCreateProjectModal = function () {
-    const modal = document.getElementById('createProjectModal');
-    if (modal) {
-        modal.classList.remove('hidden');
-    } else {
-        alert('Модальное окно не найдено');
+        this.sortConfig = {
+            name: (row) => row.querySelector('.task-name')?.innerText || '',
+            assignee: (row) => row.querySelector('td:nth-child(2)')?.innerText || '',
+            status: (row) => ({ todo: 1, in_progress: 2, done: 3 }[row.querySelector('.status-badge')?.classList[1]?.split('-')[1]] || 0),
+            priority: (row) => ({ low: 1, medium: 2, high: 3 }[row.querySelector('.priority-badge')?.classList[1]?.split('-')[1]] || 0),
+            due_date: (row) => {
+                const dateStr = row.querySelector('td:nth-child(5)')?.innerText.trim();
+                if (!dateStr || dateStr === '—') return '';
+                const [day, month, year] = dateStr.split('.');
+                return `${year}-${month}-${day}`;
+            },
+            updated_at: (row) => {
+                const dateStr = row.querySelector('td:nth-child(6)')?.innerText.trim();
+                if (!dateStr || dateStr === '—') return '';
+                const [day, month, year] = dateStr.split('.');
+                return `${year}-${month}-${day}`;
+            }
+        };
     }
-};
 
-// Открыть чат с AI
-window.openAiChat = function () {
-    window.location.href = '/ai-chat';
-};
+    init() {
+        this.initSorting();
+        this.initSearch();
+        this.initDelegation();
+    }
 
-// Получить AI рекомендацию для задачи
-window.getAiRecommendation = function (taskId) {
-    window.location.href = `/tasks/${taskId}/ai`;
-};
+    initSorting() {
+        document.querySelectorAll('.tasks-table th[data-sort]').forEach(th => {
+            th.style.cursor = 'pointer';
+            th.onclick = () => this.sort(th.dataset.sort);
+        });
+        this.sort(this.state.sort.field);
+    }
 
-// Поиск (базовый функционал)
-document.addEventListener('DOMContentLoaded', function () {
-    const searchInput = document.getElementById('globalSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', function (e) {
-            const query = e.target.value.toLowerCase();
-            const tableRows = document.querySelectorAll('.tasks-table tbody tr');
+    sort(field) {
+        const tbody = this.elements.tbody();
+        if (!tbody) return;
 
-            tableRows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
+        // Обновляем состояние
+        this.state.sort.direction = this.state.sort.field === field
+            ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc')
+            : 'asc';
+        this.state.sort.field = field;
+
+        // Сортируем строки
+        const rows = Array.from(tbody.querySelectorAll('tr[data-task-id]'));
+        const getValue = this.sortConfig[field];
+
+        rows.sort((a, b) => {
+            const aVal = getValue(a);
+            const bVal = getValue(b);
+            return this.state.sort.direction === 'asc'
+                ? (aVal > bVal ? 1 : -1)
+                : (aVal < bVal ? 1 : -1);
+        });
+
+        // Перерисовываем
+        rows.forEach(row => tbody.appendChild(row));
+        this.updateSortIcons(field);
+        this.applySearch();
+    }
+
+    updateSortIcons(activeField) {
+        document.querySelectorAll('.tasks-table th[data-sort]').forEach(th => {
+            const icon = th.querySelector('.sort-icon');
+            if (!icon) return;
+
+            if (th.dataset.sort === activeField) {
+                icon.className = `sort-icon fas fa-sort-${this.state.sort.direction === 'asc' ? 'up' : 'down'}`;
+            } else {
+                icon.className = 'sort-icon fas fa-sort';
+            }
         });
     }
-});
 
-// Открыть страницу настроек проекта
-window.openProjectSettings = function (projectId) {
-    if (projectId) {
-        window.location.href = `/projects/${projectId}`;
+    initSearch() {
+        const searchInput = this.elements.search();
+        if (searchInput) {
+            searchInput.oninput = (e) => {
+                this.state.search = e.target.value.toLowerCase();
+                this.applySearch();
+            };
+        }
     }
-};
 
-window.openCreateTaskModalWithStatus = function (status) {
-    window.presetTaskStatus = status;
-    openCreateTaskModal();
-};
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Открытие карточки задачи (через делегирование)
-    document.querySelector('.tasks-table tbody')?.addEventListener('click', function (e) {
-        const row = e.target.closest('tr[data-task-id]');
-        if (row && !e.target.closest('.delete-task-btn')) {
-            openTaskCard(row.dataset.taskId);
+    applySearch() {
+        if (!this.state.search) {
+            document.querySelectorAll('.tasks-table tbody tr').forEach(row => {
+                row.style.display = '';
+            });
+            return;
         }
-    });
 
-    document.querySelector('.kanban-board')?.addEventListener('click', function (e) {
-        const card = e.target.closest('.kanban-card[data-task-id]');
-        if (card && !e.target.closest('.delete-task-btn')) {
-            openTaskCard(card.dataset.taskId);
+        document.querySelectorAll('.tasks-table tbody tr').forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(this.state.search) ? '' : 'none';
+        });
+    }
+
+    initDelegation() {
+        // Делегирование событий через один обработчик
+        document.querySelector('.tasks-table tbody')?.addEventListener('click', (e) => {
+            const row = e.target.closest('tr[data-task-id]');
+            if (row && !e.target.closest('.delete-task-btn')) {
+                openTaskCard(row.dataset.taskId);
+            }
+        });
+
+        document.querySelector('.kanban-board')?.addEventListener('click', (e) => {
+            const card = e.target.closest('.kanban-card[data-task-id]');
+            if (card && !e.target.closest('.delete-task-btn')) {
+                openTaskCard(card.dataset.taskId);
+            }
+        });
+    }
+
+    refresh() {
+        if (this.state.sort.field) {
+            this.sort(this.state.sort.field);
         }
-    });
+    }
+}
+
+// Инициализация
+const tableManager = new TaskTableManager();
+
+document.addEventListener('DOMContentLoaded', () => {
+    tableManager.init();
 });
+
+// Глобальные функции (минимальный набор)
+window.setView = (view) => window.location.href = `/dashboard?view=${view}&project_id=${window.currentProjectId}`;
+window.openCreateProjectModal = () => document.getElementById('createProjectModal')?.classList.remove('hidden');
+window.openAiChat = () => window.location.href = '/ai-chat';
+window.getAiRecommendation = (taskId) => window.location.href = `/tasks/${taskId}/ai`;
+window.openProjectSettings = (projectId) => projectId && (window.location.href = `/projects/${projectId}`);
+window.openCreateTaskModalWithStatus = (status) => (window.presetTaskStatus = status, openCreateTaskModal());
+window.refreshSorting = () => tableManager.refresh();

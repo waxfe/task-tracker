@@ -32,11 +32,22 @@ window.closeTaskModal = function () {
                 if (newKanbanHtml) {
                     document.querySelector('.kanban-board').innerHTML = newKanbanHtml;
                 }
-                // ✅ ВОТ ЭТО ВАЖНО — переподключаем кнопки удаления
+
+                reinitializeSorting();
+
                 if (typeof bindDeleteButtons === 'function') {
                     bindDeleteButtons();
                 }
-            });
+
+                if (tableManager && tableManager.state) {
+                    // Сохраняем текущие настройки сортировки
+                    const currentSort = tableManager.state.sort;
+                    if (currentSort && currentSort.field) {
+                        tableManager.sort(currentSort.field);
+                    }
+                }
+            })
+            .catch(err => console.error('Error reloading dashboard:', err));
     }
 };
 

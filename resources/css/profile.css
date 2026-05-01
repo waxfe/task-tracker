@@ -1,0 +1,304 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #F5F7FA;
+    min-height: 100vh;
+}
+
+.profile-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.back-link,
+.logout-btn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.back-link {
+    color: #2F6FED;
+}
+
+.back-link:hover {
+    background: #EFF6FF;
+}
+
+.logout-btn {
+    color: #DC2626;
+}
+
+.logout-btn:hover {
+    background: #FEF2F2;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.profile-avatar {
+    text-align: center;
+}
+
+.profile-avatar i {
+    font-size: 80px;
+    color: #2F6FED;
+}
+
+.profile-avatar h1 {
+    font-size: 24px;
+    margin-top: 12px;
+    color: #1E293B;
+}
+
+.profile-role {
+    background: #E2E8F0;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.profile-card h2 {
+    font-size: 20px;
+    margin-bottom: 24px;
+    color: #1E293B;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1E293B;
+    margin-bottom: 6px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #CBD5E1;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2F6FED;
+    box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.1);
+}
+
+.form-group.readonly input {
+    background: #F1F5F9;
+    color: #64748B;
+    cursor: not-allowed;
+}
+
+.form-group small {
+    font-size: 12px;
+    color: #64748B;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Обновите существующие стили для stats-row и stat-block */
+
+.stats-row {
+    display: flex;
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.stat-block {
+    flex: 1;
+    background: #265FD0;
+    border-radius: 20px;
+    padding: 10px 10px;
+    /* Уменьшил padding с 20px на 16px */
+    text-align: center;
+    color: white;
+}
+
+.stat-number {
+    font-size: 25px;
+    /* Уменьшил с 32px на 24px */
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 14px;
+    /* Уменьшил с 14px на 13px */
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-secondary {
+    background: #F1F5F9;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #475569;
+}
+
+.btn-secondary:hover {
+    background: #E2E8F0;
+}
+
+.btn-primary {
+    background: #2F6FED;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1a5ad1;
+}
+
+/* Уведомления */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toast-notification.success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.toast-notification.error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.toast-notification i {
+    font-size: 20px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast-notification.fade-out {
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Стили для полей пароля */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    width: 100%;
+    padding-right: 35px;
+}
+
+.password-toggle-icon {
+    transition: color 0.2s ease;
+    background: white;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.password-toggle-icon:hover {
+    color: #2F6FED !important;
+}
+
+/* Отключаем нативные иконки во всех браузерах */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}

@@ -12,9 +12,8 @@
             </div>
             <div class="user-details">
                 <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-role">Администратор</div>
             </div>
-            <a href="{{ route('profile.edit') }}" class="settings-icon">
+            <a href="{{ route('profile.update') }}" class="settings-icon">
                 <i class="fas fa-cog"></i>
             </a>
         </div>

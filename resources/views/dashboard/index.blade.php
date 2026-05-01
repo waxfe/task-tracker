@@ -36,17 +36,17 @@
         <div class="tasks-table-container">
             <table class="tasks-table">
                 <thead>
-                    <tr>
-                        <th>Задача</th>
-                        <th>Исполнитель</th>
-                        <th>Статус</th>
-                        <th>Приоритет</th>
-                        <th>Срок выполнения</th>
-                        <th>Последнее обновление</th>
-                        <th>Рекомендации от AI</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
+    <tr>
+        <th data-sort="name">Задача <i class="sort-icon fas fa-sort"></i></th>
+        <th data-sort="assignee">Исполнитель <i class="sort-icon fas fa-sort"></i></th>
+        <th data-sort="status">Статус <i class="sort-icon fas fa-sort"></i></th>
+        <th data-sort="priority">Приоритет <i class="sort-icon fas fa-sort"></i></th>
+        <th data-sort="due_date">Срок выполнения <i class="sort-icon fas fa-sort"></i></th>
+        <th data-sort="updated_at">Последнее обновление <i class="sort-icon fas fa-sort"></i></th>
+        <th>Рекомендации от AI</th>
+        <th>Действия</th>
+    </tr>
+</thead>
                 <tbody>
                     @forelse($tasks as $task)
                     <tr data-task-id="{{ $task->task_id }}" onclick="openTaskCard({{ $task->task_id }})" style="cursor: pointer;">
