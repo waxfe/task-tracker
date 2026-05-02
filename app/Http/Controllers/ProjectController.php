@@ -85,8 +85,11 @@ class ProjectController extends Controller
             abort(403, 'Только владелец проекта может редактировать описание.');
         }
 
-        $project->description = $request->description;
-        $project->save();
+        $validated = $request->validate([
+            'name' => 'sometimes|string',
+            'description' => 'nullable|string',
+        ]);
+        $project->update($validated);
 
         return response()->json(['success' => true, 'message' => 'Описание успешно обновлено']);
     }

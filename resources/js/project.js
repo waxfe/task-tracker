@@ -14,6 +14,71 @@ window.editDescription = function () {
     }
 };
 
+window.editTitle = function () {
+    const display = document.getElementById('projectTitleDisplay');
+    const input = document.getElementById('projectTitleInput');
+    const saveBtn = document.getElementById('saveTitleBtn');
+
+    display.classList.add('hidden');
+    input.classList.remove('hidden');
+    saveBtn.classList.remove('hidden');
+    input.focus();
+    input.select();
+};
+
+window.saveTitle = function () {
+    const display = document.getElementById('projectTitleDisplay');
+    const input = document.getElementById('projectTitleInput');
+    const saveBtn = document.getElementById('saveTitleBtn');
+    const newTitle = input.value.trim();
+
+    if (!newTitle) {
+        showErrorMessage('Название не может быть пустым');
+        return;
+    }
+
+    const originalBtnText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+    saveBtn.disabled = true;
+
+    fetch(`/projects/${window.projectId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ name: newTitle })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                display.textContent = newTitle;
+                document.title = `${newTitle} | TaskAssist`;
+                display.classList.remove('hidden');
+                input.classList.add('hidden');
+                saveBtn.classList.add('hidden');
+                showSuccessMessage('Название сохранено');
+            } else {
+                showErrorMessage(data.message || 'Ошибка при сохранении');
+            }
+        })
+        .catch(() => showErrorMessage('Ошибка соединения'))
+        .finally(() => {
+            saveBtn.innerHTML = originalBtnText;
+            saveBtn.disabled = false;
+        });
+};
+
+document.getElementById('projectTitleInput')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveTitle();
+    if (e.key === 'Escape') {
+        document.getElementById('projectTitleDisplay').classList.remove('hidden');
+        document.getElementById('projectTitleInput').classList.add('hidden');
+        document.getElementById('saveTitleBtn').classList.add('hidden');
+    }
+});
+
 window.saveDescription = function () {
     const input = document.getElementById('projectDescriptionInput');
     const display = document.getElementById('projectDescriptionDisplay');

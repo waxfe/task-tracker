@@ -490,3 +490,22 @@
 .no-data-message p {
     font-size: 16px;
 }
+
+.project-title-edit-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.project-title-input {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1E293B;
+    border: 2px solid #2F6FED;
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-family: inherit;
+    outline: none;
+    width: 400px;
+}

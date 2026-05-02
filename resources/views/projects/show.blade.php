@@ -15,25 +15,20 @@
     <div class="project-page">
         {{-- Заголовок проекта --}}
         <div class="project-header">
-            <div class="project-title-wrapper">
-                <h1 class="project-title">{{ $project->name }}</h1>
-                <div class="project-actions">
-                    <div class="dropdown">
-                        <button class="project-menu-btn" onclick="toggleProjectMenu()">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <div id="projectMenu" class="dropdown-menu hidden">
-                            @if($isOwner)
-                                <button onclick="deleteProject()" class="dropdown-item delete">
-                                    <i class="fas fa-trash"></i> Удалить проект
-                                </button>
-                            @endif
-                            <button onclick="leaveProject()" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt"></i> Выйти из проекта
-                            </button>
-                        </div>
-                    </div>
-                </div>
+{{-- стало --}}
+<div class="project-title-edit-wrapper">
+    <h1 class="project-title" id="projectTitleDisplay"
+        @if($isOwner) onclick="editTitle()" title="Нажмите для редактирования" @endif>
+        {{ $project->name }}
+    </h1>
+    @if($isOwner)
+        <input type="text" id="projectTitleInput" class="project-title-input hidden"
+            value="{{ $project->name }}" maxlength="255">
+        <button id="saveTitleBtn" class="save-description-btn hidden" onclick="saveTitle()">
+            Сохранить
+        </button>
+    @endif
+</div>
             </div>
 
             {{-- Описание проекта с inline-редактированием --}}

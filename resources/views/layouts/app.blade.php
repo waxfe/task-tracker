@@ -16,7 +16,7 @@
         'resources/js/project.js',
         'resources/css/task.css',
         'resources/js/task.js',
-        'profile.js',
+        'resources/js/profile.js',
     ])
 </head>
 

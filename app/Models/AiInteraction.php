@@ -10,7 +10,7 @@ class AiInteraction extends Model
     protected $primaryKey = 'ai_id';
     protected $fillable = ['user_id', 'project_id', 'task_id', 'request_type', 'input_data', 'output_data'];
 
-    protected $casts = ['request_date' => 'date'];
+    protected $casts = ['request_date' => 'datetime'];
 
     public function user()
     {

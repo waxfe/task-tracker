@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -76,5 +77,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/{comment}', [CommentController::class, 'update'])->name('comments.update');
         Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     });
+
+    // Чат с AI
+    Route::get('/ai-chat', [AiChatController::class, 'index'])->name('ai-chat.index');
+    Route::post('/ai-chat', [AiChatController::class, 'sendMessage'])->name('ai-chat.send');
+    Route::delete('/ai-chat/history', [AiChatController::class, 'clearHistory'])->name('ai-chat.clear');
 
 });
