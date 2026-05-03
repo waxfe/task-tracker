@@ -514,22 +514,36 @@ window.refreshAIAnalysis = function () {
 
     container.innerHTML = '<div class="loading-spinner">🤔 Анализируем проект...</div>';
 
-    const projectId = document.querySelector('meta[name="project-id"]')?.content;
+    const projectId = window.projectId;
 
-    // Временная заглушка
-    setTimeout(() => {
-        const statsOverdue = window.statsData?.overdue || 0;
-        const statsTodo = window.statsData?.todo || 0;
-
-        const recommendations = [
-            `⚠️ В проекте обнаружено ${statsOverdue} задач с истекшим сроком выполнения. Рекомендуется пересмотреть приоритеты и обновить сроки выполнения.`,
-            '📊 Наибольшая нагрузка на участника. Рекомендуется перераспределить задачи для равномерной загрузки команды.',
-            `📋 ${statsTodo} задач ожидают начала выполнения. Рекомендуется назначить ответственных и установить сроки.`,
-            '✅ Темп выполнения задач позволяет завершить проект в срок при сохранении текущей динамики.'
-        ];
-
-        container.innerHTML = recommendations.map(r => `<div class="ai-insight">${r}</div>`).join('');
-    }, 500);
+    fetch(`/projects/${projectId}/ai-analyze`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.analysis) {
+                const recommendations = Array.isArray(data.analysis) ? data.analysis : [data.analysis];
+                // Убираем кавычки в начале и конце каждой строки
+                const cleaned = recommendations.map(r =>
+                    String(r)
+                        .replace(/^["'\s]+|["'\s]+$/g, '')
+                        .replace(/\\"/g, '"')
+                        .trim()
+                ).filter(r => r.length > 0);
+                container.innerHTML = cleaned.map(r => `<div class="ai-insight">${escapeHtml(r)}</div>`).join('');
+            } else {
+                container.innerHTML = '<div class="ai-insight error">Не удалось получить рекомендации. Попробуйте позже.</div>';
+            }
+        })
+        .catch(error => {
+            console.error('AI Analysis error:', error);
+            container.innerHTML = '<div class="ai-insight error">Ошибка соединения. Попробуйте позже.</div>';
+        });
 };
 
 // ========== УЧАСТНИКИ ==========
@@ -789,8 +803,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Загрузка AI анализа
-    if (document.getElementById('aiAnalysisContainer')) {
-        refreshAIAnalysis();
+    if (window.lastAnalysis && window.lastAnalysis.length > 0) {
+        const container = document.getElementById('aiAnalysisContainer');
+        const cleaned = window.lastAnalysis.map(r =>
+            String(r)
+                .replace(/^["'\s]+|["'\s]+$/g, '')
+                .replace(/\\"/g, '"')
+                .trim()
+        ).filter(r => r.length > 0);
+        container.innerHTML = cleaned.map(r => `<div class="ai-insight">${escapeHtml(r)}</div>`).join('');
     }
 
     // Кнопка подтверждения удаления

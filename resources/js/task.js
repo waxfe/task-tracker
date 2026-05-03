@@ -19,6 +19,10 @@ window.closeTaskModal = function () {
     document.getElementById('taskModal').classList.add('hidden');
 
     if (window.location.pathname === '/dashboard' && window.currentProjectId) {
+        // Сохраняем текущую сортировку
+        const currentSortField = currentSort?.field;
+        const currentSortDirection = currentSort?.direction;
+
         fetch(`/dashboard?project_id=${window.currentProjectId}&view=${window.currentView || 'list'}`)
             .then(res => res.text())
             .then(html => {
@@ -27,24 +31,27 @@ window.closeTaskModal = function () {
                 const newTasksHtml = doc.querySelector('.tasks-table-container')?.innerHTML;
                 if (newTasksHtml) {
                     document.querySelector('.tasks-table-container').innerHTML = newTasksHtml;
+
+                    // Переинициализируем сортировку
+                    if (typeof initSorting === 'function') {
+                        initSorting();
+                    }
+
+                    // Восстанавливаем последнюю сортировку
+                    if (currentSortField && typeof sortTasks === 'function') {
+                        currentSort.field = currentSortField;
+                        currentSort.direction = currentSortDirection;
+                        sortTasks(currentSortField);
+                    }
                 }
+
                 const newKanbanHtml = doc.querySelector('.kanban-board')?.innerHTML;
                 if (newKanbanHtml) {
                     document.querySelector('.kanban-board').innerHTML = newKanbanHtml;
                 }
 
-                reinitializeSorting();
-
                 if (typeof bindDeleteButtons === 'function') {
                     bindDeleteButtons();
-                }
-
-                if (tableManager && tableManager.state) {
-                    // Сохраняем текущие настройки сортировки
-                    const currentSort = tableManager.state.sort;
-                    if (currentSort && currentSort.field) {
-                        tableManager.sort(currentSort.field);
-                    }
                 }
             })
             .catch(err => console.error('Error reloading dashboard:', err));
@@ -502,25 +509,27 @@ function getFieldName(field) {
 }
 
 // ========== AI-РЕКОМЕНДАЦИИ ==========
-function renderAiRecommendations(recs) {
+function renderAiRecommendations(recommendations) {
     const container = document.getElementById('aiRecommendationsList');
-    let recommendations = recs;
-    if (!recommendations.length) {
-        recommendations = [
-            { text: "⚠️ Возможен риск срыва срока выполнения. Рекомендуется уточнить требования." },
-            { text: "📊 Задача выглядит перегруженной. Разбейте на подзадачи." },
-            { text: "🎯 Приоритет высокий, но статус 'К выполнению' — начните работу." }
-        ];
+    if (!container) return;
+
+    if (!recommendations || recommendations.length === 0) {
+        container.innerHTML = '<div class="placeholder-text">Нажмите «Запрос», чтобы получить рекомендации</div>';
+        return;
     }
-    container.innerHTML = recommendations.map((r, idx) => `
-        <div class="ai-card" data-ai-idx="${idx}">
-            <div class="ai-menu" onclick="toggleAiMenu(${idx})">⋯</div>
-            <div class="ai-text">${escapeHtml(r.text)}</div>
-            <div class="ai-actions hidden" id="aiMenu-${idx}">
-                <button onclick="editAiRec(${idx})">✏️ Редактировать</button>
-                <button onclick="deleteAiRec(${idx})">🗑️ Удалить</button>
-                <button onclick="applyAiRec(${idx})">✓ Принять</button>
-            </div>
+
+    // Если пришёл массив строк — отображаем как есть
+    let items = recommendations;
+    if (typeof recommendations[0] === 'string') {
+        items = recommendations;
+    } else if (recommendations[0] && typeof recommendations[0] === 'object' && recommendations[0].text) {
+        items = recommendations.map(r => r.text);
+    }
+
+    // Просто карточки без меню и кнопок
+    container.innerHTML = items.map(text => `
+        <div class="ai-card-simple">
+            <div class="ai-text">${escapeHtml(text)}</div>
         </div>
     `).join('');
 }
@@ -702,11 +711,39 @@ document.getElementById('addCommentBtn')?.addEventListener('click', () => {
 
 // ========== AI-ЗАПРОС ==========
 document.getElementById('requestAiRecommendBtn')?.addEventListener('click', () => {
-    showMessage('Запрос к AI отправлен...', false);
-    setTimeout(() => {
-        renderAiRecommendations([]);
-        showMessage('AI-рекомендации получены', false);
-    }, 1000);
+    const taskId = window.currentTaskId;
+    if (!taskId) {
+        showMessage('ID задачи не найден', true);
+        return;
+    }
+
+    const container = document.getElementById('aiRecommendationsList');
+    container.innerHTML = '<div class="loading-spinner">🤔 Анализируем задачу...</div>';
+
+    fetch(`/tasks/${taskId}/ai-analyze`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.analysis) {
+                // data.analysis — массив строк
+                renderAiRecommendations(data.analysis);
+                showMessage('Рекомендации получены', false);
+            } else {
+                container.innerHTML = '<div class="placeholder-text error">Не удалось получить рекомендации</div>';
+                showMessage(data.message || 'Ошибка получения рекомендаций', true);
+            }
+        })
+        .catch(error => {
+            console.error('AI error:', error);
+            container.innerHTML = '<div class="placeholder-text error">Ошибка соединения</div>';
+            showMessage('Ошибка соединения', true);
+        });
 });
 
 // ========== ВСПОМОГАТЕЛЬНЫЕ ==========

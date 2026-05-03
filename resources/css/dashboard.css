@@ -595,11 +595,14 @@
 
 /* Шапка карточки (название + иконка AI) */
 .kanban-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
     margin-bottom: 12px;
+}
+
+.card-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .card-title {
@@ -607,15 +610,13 @@
     font-size: 14px;
     color: #1E293B;
     line-height: 1.4;
-    flex: 1;
 }
 
 .ai-brain-icon {
     color: #265FD0;
-    font-size: 16px;
+    font-size: 12px;
     cursor: help;
     flex-shrink: 0;
-    transition: transform 0.2s;
 }
 
 .ai-brain-icon:hover {
@@ -715,6 +716,7 @@
     right: 8px;
     display: flex;
     gap: 6px;
+    z-index: 5;
 }
 
 /* =================== СОРТИРОВКА =================== */

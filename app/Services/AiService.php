@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\Log;
 
 class AiService
 {
-    public function chat($message, $context = null)
+    public function chat($message, $context = null, $temperature = 0.7, $maxTokens = 500)
     {
         $messages = $this->buildMessage($message, $context);
-        $reply = $this->callApi($messages);
+        $reply = $this->callApi($messages, $temperature, $maxTokens);
 
         return $reply ?: $this->mockResponse($message, $context);
     }
 
-    private function callApi($messages)
+    private function callApi($messages, $temperature = 0.7, $maxTokens = 500)
     {
         $apiKey = env('OPENROUTER_API_KEY');
 
@@ -33,8 +33,8 @@ class AiService
             ])->timeout(30)->post('https://openrouter.ai/api/v1/chat/completions', [
                         'model' => 'google/gemini-2.5-flash-lite',
                         'messages' => $messages,
-                        'temperature' => 0.7,
-                        'max_tokens' => 500,
+                        'temperature' => $temperature,
+                        'max_tokens' => $maxTokens,
                     ]);
 
             if ($response->failed()) {
@@ -94,6 +94,19 @@ class AiService
         *курсив* для акцентов, списки — через * или -. Не используй Markdown-заголовки #. ";
 
         return $prompt;
+    }
+
+    public function analyze($systemPrompt, $userMessage = null, $temperature = 0.3, $maxTokens = 300)
+    {
+        $messages = [
+            ['role' => 'system', 'content' => $systemPrompt],
+        ];
+
+        if ($userMessage) {
+            $messages[] = ['role' => 'user', 'content' => $userMessage];
+        }
+
+        return $this->callApi($messages, $temperature, $maxTokens);
     }
 
     private function mockResponse($message, $context)

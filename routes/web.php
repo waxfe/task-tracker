@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/projects/{project}', [ProjectController::class, 'delete'])->name('projects.delete');
     Route::post('/projects/{project}/leave', [ProjectController::class, 'leave'])->name('projects.leave');
     Route::get('/projects/{project}/users', [ProjectController::class, 'getUsers']);
+    Route::post('/projects/{project}/ai-analyze', [ProjectController::class, 'aiAnalyze'])->name('projects.ai-analyze');
 
     // Участники проекта
     Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
@@ -70,6 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::post('/tasks/{task}/ai-analyze', [TaskController::class, 'aiAnalyze'])->name('tasks.ai-analyze');
 
     // Комментарии
     Route::prefix('tasks/{task}/comments')->group(function () {

@@ -493,6 +493,19 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     color: #94A3B8;
 }
 
+.ai-card-simple {
+    background: white;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.ai-card-simple .ai-text {
+    color: #1E293B;
+}
+
 .history-item {
     font-size: 12px;
     border-left: 2px solid #CBD5E1;

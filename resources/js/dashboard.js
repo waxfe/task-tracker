@@ -1,4 +1,4 @@
-// resources/js/dashboard-optimized.js
+let currentSort = { field: null, direction: 'asc' };
 
 // ========== УНИВЕРСАЛЬНЫЙ МЕНЕДЖЕР ТАБЛИЦ ==========
 class TaskTableManager {

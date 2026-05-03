@@ -5,13 +5,14 @@
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        window.projectId = {{ $project->project_id }};
-        window.statsData = @json($stats);
-        window.tasksData = @json($tasks);
-        window.membersData = @json($members);
-        window.isOwner = {{ $isOwner ? 'true' : 'false' }};
-        window.currentUserId = {{ $currentUser->id }};
-    </script>
+    window.projectId = {{ $project->project_id }};
+    window.statsData = @json($stats);
+    window.tasksData = @json($tasks);
+    window.membersData = @json($members);
+    window.isOwner = {{ $isOwner ? 'true' : 'false' }};
+    window.currentUserId = {{ $currentUser->id }};
+    window.lastAnalysis = @json($lastAnalysisOutput);
+</script>
     <div class="project-page">
         {{-- Заголовок проекта --}}
         <div class="project-header">

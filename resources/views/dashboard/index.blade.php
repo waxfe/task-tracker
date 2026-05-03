@@ -80,12 +80,12 @@
                         <td>{{ $task->updated_at->format('d.m.Y') }}</td>
                         <td>
                             @if($task->aiInteractions->count() > 0)
-                                <button class="ai-recommend-btn" onclick="getAiRecommendation({{ $task->task_id }}, event)">
-                                    <i class="fas fa-robot"></i> Посмотреть
-                                </button>
-                            @else
-                                <span class="no-ai">Нет</span>
-                            @endif
+    <span class="has-ai">
+        <i class="fas fa-robot"></i> Есть
+    </span>
+@else
+    <span class="no-ai">Нет</span>
+@endif
                         </td>
 
                         <td class="actions">
@@ -129,11 +129,13 @@
                     @foreach($tasksByStatus[$statusKey] as $task)
                         <div class="kanban-card" onclick="openTaskCard({{ $task->task_id }})" style="position: relative;">
     <div class="kanban-card-header">
+    <div class="card-title-wrapper">
         <span class="card-title">{{ $task->name }}</span>
         @if($task->aiInteractions->count() > 0)
             <i class="fas fa-brain ai-brain-icon" title="Есть AI-рекомендации"></i>
         @endif
     </div>
+</div>
     <div class="card-footer">
         <span class="priority-{{ $task->priority }}">{{ $task->priority }}</span>
         <span class="due-date">{{ $task->due_date ? $task->due_date->format('d.m.Y') : '—' }}</span>

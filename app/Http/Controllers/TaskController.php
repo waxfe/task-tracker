@@ -7,11 +7,19 @@ use App\Models\Comment;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\TaskHistory;
+use App\Services\AiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
+    protected $aiService;
+
+    public function __construct(AiService $aiService)
+    {
+        $this->aiService = $aiService;
+    }
+
     public function show(Task $task)
     {
         $user = Auth::user();
@@ -25,6 +33,15 @@ class TaskController extends Controller
                 'message' => 'Нет доступа к задаче',
             ], 403);
         }
+
+        // AI-рекомендации
+        $lastAnalys = AiInteraction::where('task_id', $task->task_id)
+            ->where('request_type', 'task_analysis')
+            ->latest()
+            ->first();
+
+        $aiRecommendations = $lastAnalys ? json_decode($lastAnalys->output_data, true) : [];
+
 
         $data = [
             'id' => $task->task_id,
@@ -52,6 +69,8 @@ class TaskController extends Controller
                 ],
                 'created_at' => $c->created_at->format('d.m.Y H:i'),
             ]),
+
+            'ai_recommendations' => $aiRecommendations,
 
             // История изменений
             'history' => $task->histories->map(fn($h) => [
@@ -269,5 +288,86 @@ class TaskController extends Controller
         ]);
     }
 
+    public function aiAnalyze(Task $task)
+    {
+        $user = Auth::user();
+        $project = $task->project;
 
+        $member = $project->users()->where('user_id', $user->id)->exists();
+        $executorsNames = implode(', ', $task->users->pluck('name')->toArray());
+
+        if (!$member) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Нет доступа',
+            ], 403);
+        }
+
+        $stats = [
+            'name' => $task->name,
+            'description' => $task->description,
+            'status' => $task->status,
+            'priority' => $task->priority,
+            'due_date' => $task->due_date?->format('d.m.Y'),
+            'created_at' => $task->created_at?->format('d.m.Y'),
+            'executors' => $executorsNames,
+        ];
+
+        $prompt = "Ты — аналитик задачи. Проанализируй задачу '{$task->name}'.\n\n";
+        $prompt .= "Параметры задачи:\n";
+        $prompt .= "- Описание: {$stats['description']}\n";
+        $prompt .= "- Статус: {$stats['status']}\n";
+        $prompt .= "- Приоритет: {$stats['priority']}\n";
+        $prompt .= "- Срок выполнения: {$stats['due_date']}\n";
+        $prompt .= "- Дата создания: {$stats['created_at']}\n";
+        $prompt .= "- Исполнители: {$stats['executors']}\n";
+
+        $prompt .= "Дай 2-3 короткие рекомендации. Каждая рекомендация — одно-два предложение.
+        Используй эмодзи в начале (⚠️, 📊, 🔥, ✅, 🚨, 🎯). 
+        ВАЖНО: не используй кавычки внутри текста рекомендаций.
+        Формат ответа: только массив JSON, без пояснений, без markdown. 
+        Пример: [\"⚠️ Задача выглядит перегруженной. Разбейте на подзадачи\", \"📊 ⚠️ Возможен риск срыва срока выполнения. Рекомендуется уточнить требования. \"]";
+
+        $reply = $this->aiService->analyze($prompt);
+
+        $reply = preg_replace('/```json\s*/i', '', $reply);
+        $reply = preg_replace('/```\s*/i', '', $reply);
+        $reply = trim($reply);
+
+        $reccomendations = json_decode($reply, true);
+
+        if (is_array($reccomendations)) {
+            $output = array_map(function ($r) {
+                $r = trim($r, '"\'');
+                $r = str_replace('\\"', '', $r);
+                $r = str_replace('"', '', $r);
+                return trim($r);
+            }, $reccomendations);
+            $outputForDB = json_encode($output);
+        } else {
+            $output = explode("\n", trim($reply));
+            $output = array_values(array_filter($output, fn($line) => strlen($line) > 10));
+            $output = array_map(function ($r) {
+                $r = trim($r, '"\'- ');
+                $r = str_replace('\\"', '', $r);
+                $r = str_replace('"', '', $r);
+                return trim($r);
+            }, $output);
+            $outputForDB = json_encode($output);
+        }
+
+        AiInteraction::create([
+            'user_id' => $user->id,
+            'task_id' => $task->task_id,
+            'request_type' => 'task_analysis',
+            'input_data' => json_encode(['stats' => $stats]),
+            'output_data' => $outputForDB,
+            'request_date' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'analysis' => $output,
+        ]);
+    }
 }
