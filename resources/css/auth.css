@@ -90,7 +90,6 @@
     font-size: 13px;
 }
 
-/* Чекбокс */
 .checkbox-group {
     display: flex;
     align-items: center;
@@ -111,7 +110,6 @@
     cursor: pointer;
 }
 
-/* Кнопки */
 .btn {
     width: 100%;
     padding: 14px;
@@ -132,7 +130,6 @@
     background-color: #1a4ba8;
 }
 
-/* Ссылки */
 .auth-links {
     text-align: center;
     margin-top: 24px;
@@ -150,7 +147,6 @@
     text-decoration: underline;
 }
 
-/* Линия-разделитель */
 .divider {
     text-align: center;
     margin: 24px 0;
@@ -175,7 +171,6 @@
     font-size: 13px;
 }
 
-/* Сообщения */
 .error-message {
     background-color: #FEF2F2;
     border: 1px solid #FEE2E2;

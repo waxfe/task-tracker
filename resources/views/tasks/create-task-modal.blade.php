@@ -12,7 +12,6 @@
         <div class="task-modal-divider"></div>
 
         <div class="task-modal-grid">
-            {{-- ЛЕВАЯ КОЛОНКА --}}
             <div class="task-left-column">
                 <div class="task-field-group">
                     <label>Название задачи <span class="required">*</span></label>
@@ -26,11 +25,9 @@
                 </div>
             </div>
 
-            {{-- ПРАВАЯ КОЛОНКА --}}
             <div class="task-right-column">
                 <h4>Атрибуты задачи</h4>
                 <div class="task-attributes">
-                    {{-- Приоритет сверху --}}
                     <div class="attr-row">
                         <span class="attr-label">Приоритет</span>
                         <select id="newTaskPriority" class="task-select priority-select">
@@ -40,7 +37,6 @@
                         </select>
                     </div>
 
-                    {{-- Статус вторым --}}
                     <div class="attr-row">
                         <span class="attr-label">Статус</span>
                         <select id="newTaskStatus" class="task-select">

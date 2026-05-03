@@ -7,6 +7,16 @@ function scrollToBottom() {
     messagesArea.scrollTop = messagesArea.scrollHeight;
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function (m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
 function addMessage(message, isUser, suggestions = []) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
@@ -14,7 +24,6 @@ function addMessage(message, isUser, suggestions = []) {
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
 
-    // Для AI — рендерим markdown, для юзера — экранируем HTML
     const renderedMessage = isUser
         ? `<p>${escapeHtml(message)}</p>`
         : marked.parse(message);
@@ -35,16 +44,6 @@ function addMessage(message, isUser, suggestions = []) {
     messageDiv.appendChild(bubble);
     messagesArea.appendChild(messageDiv);
     scrollToBottom();
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function (m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
 }
 
 function sendMessage() {
@@ -103,42 +102,62 @@ messageInput.addEventListener('keydown', (e) => {
     }
 });
 
-// Авто-высота textarea
 messageInput.addEventListener('input', function () {
     this.style.height = 'auto';
     this.style.height = Math.min(this.scrollHeight, 120) + 'px';
 });
 
-// Скролл вниз при загрузке
 scrollToBottom();
 
-// Очистка истории
-const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+// ========== ОЧИСТКА ИСТОРИИ С МОДАЛКОЙ ==========
+function openClearHistoryModal() {
+    document.getElementById('clearHistoryModal').classList.remove('hidden');
+}
 
-clearHistoryBtn?.addEventListener('click', () => {
-    if (confirm('Вы уверены, что хотите очистить всю историю сообщений?')) {
-        fetch('/ai-chat/history', {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+function closeClearHistoryModal() {
+    document.getElementById('clearHistoryModal').classList.add('hidden');
+}
+
+function executeClearHistory() {
+    fetch('/ai-chat/history', {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                messagesArea.innerHTML = '';
+                showMessage('История очищена', false);
+                closeClearHistoryModal();
+            } else {
+                showMessage('Ошибка при очистке', true);
+                closeClearHistoryModal();
             }
         })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    // Очищаем область сообщений
-                    messagesArea.innerHTML = '';
-                    showMessage('История очищена', false);
-                } else {
-                    showMessage('Ошибка при очистке', true);
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                showMessage('Ошибка соединения', true);
-            });
-    }
-});
+        .catch(err => {
+            console.error(err);
+            showMessage('Ошибка соединения', true);
+            closeClearHistoryModal();
+        });
+}
+
+// Делаем функции глобальными для onclick
+window.openClearHistoryModal = openClearHistoryModal;
+window.closeClearHistoryModal = closeClearHistoryModal;
+
+// Кнопка очистки
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+if (clearHistoryBtn) {
+    clearHistoryBtn.addEventListener('click', openClearHistoryModal);
+}
+
+// Кнопка подтверждения
+const confirmClearHistoryBtn = document.getElementById('confirmClearHistoryBtn');
+if (confirmClearHistoryBtn) {
+    confirmClearHistoryBtn.addEventListener('click', executeClearHistory);
+}
 
 function showMessage(msg, isError = false) {
     const messageDiv = document.createElement('div');
@@ -147,4 +166,3 @@ function showMessage(msg, isError = false) {
     document.body.appendChild(messageDiv);
     setTimeout(() => messageDiv.remove(), 3000);
 }
-

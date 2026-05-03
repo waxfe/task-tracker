@@ -26,7 +26,7 @@ function addPasswordToggle(inputElement) {
     toggleIcon.style.color = '#64748B';
     toggleIcon.style.zIndex = '1';
     toggleIcon.style.fontSize = '16px';
-    toggleIcon.style.display = 'none'; // Скрываем иконку по умолчанию
+    toggleIcon.style.display = 'none';
 
     wrapper.appendChild(toggleIcon);
 
@@ -36,7 +36,6 @@ function addPasswordToggle(inputElement) {
             toggleIcon.style.display = 'block';
         } else {
             toggleIcon.style.display = 'none';
-            // Если поле пустое и пароль был видим, переключаем обратно в password
             if (inputElement.type === 'text') {
                 inputElement.type = 'password';
                 toggleIcon.className = 'fas fa-eye-slash password-toggle-icon';
@@ -44,7 +43,6 @@ function addPasswordToggle(inputElement) {
         }
     }
 
-    // Отключаем встроенную иконку браузера
     inputElement.style.paddingRight = '35px';
 
     // Обработчики событий для показа/скрытия иконки
@@ -71,13 +69,11 @@ function addPasswordToggle(inputElement) {
         }
     });
 
-    // Проверяем начальное состояние
     updateIconVisibility();
 
     return { wrapper, toggleIcon };
 }
 
-// Отключаем встроенные иконки браузера для всех полей пароля
 function disableNativePasswordIcons() {
     const style = document.createElement('style');
     style.textContent = `
@@ -95,7 +91,6 @@ function disableNativePasswordIcons() {
 
 // Инициализация всех полей пароля при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
-    // Отключаем нативные иконки браузера
     disableNativePasswordIcons();
 
     const passwordFields = [
@@ -107,7 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
     passwordFields.forEach(fieldId => {
         const field = document.getElementById(fieldId);
         if (field) {
-            // Удаляем существующий wrapper, если есть
             if (field.parentElement.classList && field.parentElement.classList.contains('password-wrapper')) {
                 const parent = field.parentElement;
                 const grandParent = parent.parentElement;
@@ -119,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Функция для перевода ошибок Laravel в понятные сообщения
 function translateErrorMessage(message) {
     const translations = {
         'The current password field is required when password is present.': 'Укажите текущий пароль для смены пароля',
@@ -137,7 +130,6 @@ function translateErrorMessage(message) {
 document.getElementById('profileForm')?.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    // Блокируем кнопку отправки
     const submitBtn = document.querySelector('.btn-primary');
     const originalText = submitBtn?.textContent;
     if (submitBtn) {
@@ -184,11 +176,9 @@ document.getElementById('profileForm')?.addEventListener('submit', function (e) 
         .then(data => {
             if (data.success) {
                 showMessage(data.message, false);
-                // Успех - релоадим страницу, кнопку не разблокируем (всё равно релоад)
                 setTimeout(() => location.reload(), 1500);
             } else {
                 showMessage(data.message || 'Произошла ошибка', true);
-                // Разблокируем кнопку при ошибке
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalText;
@@ -198,7 +188,6 @@ document.getElementById('profileForm')?.addEventListener('submit', function (e) 
         .catch(err => {
             console.error('Fetch error:', err);
             showMessage(err.message, true);
-            // Разблокируем кнопку при ошибке
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;

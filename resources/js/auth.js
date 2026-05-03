@@ -1,5 +1,3 @@
-// resources/js/auth.js
-
 // Автоматическое исчезновение сообщений об ошибках
 document.addEventListener('DOMContentLoaded', function () {
     const errorMessages = document.querySelectorAll('.error-message');

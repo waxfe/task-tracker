@@ -6,6 +6,10 @@
 
 /* Заголовок проекта */
 .project-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
     margin-bottom: 24px;
 }
 
@@ -125,7 +129,6 @@
 }
 
 /* Графики */
-/* Графики */
 .charts-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -147,7 +150,6 @@
     color: #1E293B;
 }
 
-/* Контейнер для диаграммы статусов - фиксированный размер */
 .donut-chart-container {
     display: flex;
     justify-content: center;
@@ -156,13 +158,11 @@
     margin: 0 auto;
 }
 
-/* Уменьшаем canvas для диаграммы статусов */
 #statusDonutChart {
     max-width: 200px;
     max-height: 200px;
 }
 
-/* Остальные графики - уменьшенная высота */
 #completionLineChart,
 #userLoadBarChart,
 #priorityBarChart {
@@ -380,7 +380,6 @@
     }
 }
 
-/* Сообщение об ошибке */
 .field-error-message {
     background-color: #FEF2F2;
     border-left: 3px solid #DC2626;
@@ -388,7 +387,6 @@
     border-radius: 6px;
 }
 
-/* Сообщение об успехе */
 .field-success-message {
     background-color: #ECFDF5;
     border-left: 3px solid #059669;
@@ -396,7 +394,6 @@
     border-radius: 6px;
 }
 
-/* Для не-владельца — описание только для чтения */
 .project-description:not([onclick]) {
     cursor: default;
     background: #F8FAFC;
@@ -421,7 +418,6 @@
     }
 }
 
-/* Выпадающее меню */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -471,7 +467,6 @@
     background: #FEF2F2;
 }
 
-/* Сообщение при отсутствии данных */
 .no-data-message {
     grid-column: span 2;
     text-align: center;

@@ -15,7 +15,6 @@
 <body>
     <div class="chat-page">
         <div class="chat-container">
-            {{-- Шапка --}}
             <div class="chat-header">
                 <div class="header-left">
                     <h1><i class="fas fa-robot"></i> AI-ассистент</h1>
@@ -42,10 +41,8 @@
                 </div>
             </div>
 
-            {{-- Разделитель --}}
             <div class="chat-divider"></div>
 
-            {{-- История сообщений --}}
             <div class="messages-area" id="messagesArea">
                 @foreach($messages as $msg)
                     <div class="message {{ $msg->is_user ? 'user' : 'ai' }}">
@@ -66,7 +63,6 @@
                 @endforeach
             </div>
 
-            {{-- Область ввода --}}
             <div class="input-area">
                 <div class="input-wrapper">
                     <textarea id="messageInput" rows="1" placeholder="Задайте вопрос AI-ассистенту..."></textarea>
@@ -85,6 +81,25 @@
         window.currentProjectId = {{ $selectedProjectId ?? 'null' }};
         window.currentUserId = {{ auth()->id() }};
     </script>
+    {{-- Модалка подтверждения очистки истории --}}
+    <div id="clearHistoryModal" class="modal hidden">
+        <div class="modal-overlay" onclick="closeClearHistoryModal()"></div>
+        <div class="modal-container" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Очистка истории</h3>
+                <button class="modal-close" onclick="closeClearHistoryModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <p>Вы уверены, что хотите очистить всю историю сообщений?</p>
+                <p class="text-muted" style="font-size: 13px; color: #64748B;">Действие необратимо. Все сообщения будут
+                    удалены.</p>
+            </div>
+            <div class="modal-footer" style="padding: 16px 20px;">
+                <button class="btn-secondary" onclick="closeClearHistoryModal()">Отмена</button>
+                <button class="btn-danger" id="confirmClearHistoryBtn">Очистить</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -13,7 +13,6 @@
 
 <body>
     <div class="profile-page">
-        {{-- Шапка --}}
         <div class="profile-header">
             <a href="{{ route('dashboard', ['project_id' => session('current_project_id', 1)]) }}" class="back-link">
                 <i class="fas fa-arrow-left"></i> На главную
@@ -23,7 +22,6 @@
             </button>
         </div>
 
-        {{-- Основной контент --}}
         <div class="profile-container">
             <div class="profile-avatar">
                 <i class="fas fa-user-circle"></i>

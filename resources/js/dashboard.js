@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tableManager.init();
 });
 
-// Глобальные функции (минимальный набор)
+// Глобальные функции 
 window.setView = (view) => window.location.href = `/dashboard?view=${view}&project_id=${window.currentProjectId}`;
 window.openCreateProjectModal = () => document.getElementById('createProjectModal')?.classList.remove('hidden');
 window.openAiChat = () => window.location.href = '/ai-chat';

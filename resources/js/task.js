@@ -19,7 +19,6 @@ window.closeTaskModal = function () {
     document.getElementById('taskModal').classList.add('hidden');
 
     if (window.location.pathname === '/dashboard' && window.currentProjectId) {
-        // Сохраняем текущую сортировку
         const currentSortField = currentSort?.field;
         const currentSortDirection = currentSort?.direction;
 
@@ -32,12 +31,10 @@ window.closeTaskModal = function () {
                 if (newTasksHtml) {
                     document.querySelector('.tasks-table-container').innerHTML = newTasksHtml;
 
-                    // Переинициализируем сортировку
                     if (typeof initSorting === 'function') {
                         initSorting();
                     }
 
-                    // Восстанавливаем последнюю сортировку
                     if (currentSortField && typeof sortTasks === 'function') {
                         currentSort.field = currentSortField;
                         currentSort.direction = currentSortDirection;
@@ -71,7 +68,6 @@ window.editTaskTitle = function () {
     input.focus();
 };
 
-// Сохранение названия
 document.getElementById('taskTitleSaveBtn')?.addEventListener('click', () => {
     const input = document.getElementById('taskTitleInput');
     const display = document.getElementById('taskTitleDisplay');
@@ -91,7 +87,6 @@ document.getElementById('taskTitleSaveBtn')?.addEventListener('click', () => {
     saveBtn.classList.add('hidden');
 });
 
-// Отмена по Escape
 document.getElementById('taskTitleInput')?.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         const display = document.getElementById('taskTitleDisplay');
@@ -106,24 +101,20 @@ document.getElementById('taskTitleInput')?.addEventListener('keydown', (e) => {
 // ========== ОСНОВНОЙ РЕНДЕР ==========
 function renderTaskModal(task) {
     window.lastTaskUsers = task.available_users || [];
-    // Заголовок и приоритет
     document.getElementById('taskTitleDisplay').innerText = task.name;
     const badge = document.getElementById('taskPriorityBadge');
     badge.className = `task-priority-badge priority-${task.priority}`;
 
-    // Статус
     document.getElementById('taskStatusBadge').innerText = translateStatus(task.status);
 
-    // Описание
     const descDiv = document.getElementById('taskDescriptionDisplay');
     descDiv.innerText = task.description || 'Нет описания';
     const descInput = document.getElementById('taskDescriptionInput');
     descInput.value = task.description || '';
 
-    // Атрибуты
     document.getElementById('taskStatusSelect').value = task.status;
 
-    // Устанавливаем приоритет с цветом
+
     const prioritySelect = document.getElementById('taskPrioritySelect');
     prioritySelect.value = task.priority;
     prioritySelect.style.color = getPriorityColor(task.priority);
@@ -150,7 +141,6 @@ function renderTaskModal(task) {
     if (task.history && Array.isArray(task.history)) {
         renderHistory([...task.history].reverse());
     } else {
-        // Загружаем историю отдельно, если её нет в ответе
         fetchTaskHistory(task.id);
     }
 
@@ -196,24 +186,21 @@ function getPriorityColor(priority) {
     }
 }
 
-// При изменении приоритета — меняем цвет текста
 document.getElementById('taskPrioritySelect')?.addEventListener('change', function () {
     this.style.color = getPriorityColor(this.value);
 });
 
 document.addEventListener('click', function (e) {
-    // Если клик внутри модалки, но не по кнопке меню и не по самому меню
     const isInsideModal = !!e.target.closest('.task-modal-container');
     const isOnMenuBtn = !!e.target.closest('.comment-menu-btn');
     const isOnDropdown = !!e.target.closest('.comment-dropdown');
-    const isOnRemoveBtn = !!e.target.closest('.remove-user'); // ✅ Добавлено
-    const isOnModalOverlay = !!e.target.closest('.modal-overlay'); // ✅ Добавлено
+    const isOnRemoveBtn = !!e.target.closest('.remove-user');
+    const isOnModalOverlay = !!e.target.closest('.modal-overlay');
 
     if (isInsideModal && !isOnMenuBtn && !isOnDropdown && !isOnRemoveBtn) {
         document.querySelectorAll('.comment-dropdown').forEach(dd => dd.classList.add('hidden'));
     }
 
-    // ✅ Закрываем только при клике на оверлей
     if (isOnModalOverlay && !isInsideModal) {
         closeTaskModal();
     }
@@ -294,7 +281,6 @@ window.editComment = function (commentId) {
                     textarea.replaceWith(newSpan);
                     saveBtn.remove();
 
-                    // Обновляем дату комментария
                     const dateSpan = commentDiv.querySelector('.comment-date');
                     if (dateSpan && data.comment.updated_at) {
                         dateSpan.innerText = data.comment.updated_at;
@@ -321,7 +307,6 @@ window.editComment = function (commentId) {
     }, 50);
 };
 
-// Переменная для хранения ID комментария, который хотим удалить
 let pendingCommentId = null;
 
 window.deleteComment = function (commentId) {
@@ -334,7 +319,6 @@ window.closeDeleteCommentModal = function () {
     pendingCommentId = null;
 };
 
-// Обработчик подтверждения удаления
 document.getElementById('confirmDeleteCommentBtn')?.addEventListener('click', function () {
     if (!pendingCommentId) return;
 
@@ -352,7 +336,6 @@ document.getElementById('confirmDeleteCommentBtn')?.addEventListener('click', fu
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // Удаляем комментарий из DOM
                 const commentElement = document.querySelector(`.comment-item[data-comment-id="${pendingCommentId}"]`);
                 if (commentElement) commentElement.remove();
                 showMessage('Комментарий удалён', false);
@@ -414,14 +397,11 @@ function handleCommentMenuClick(e) {
             const isVisible = btnRect.top >= wrapperRect.top && btnRect.bottom <= wrapperRect.bottom;
 
             if (!isVisible) {
-                // Скроллим до кнопки, потом позиционируем
                 const commentItem = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
                 commentItem?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 
-                // Ждём окончания скролла и только потом рисуем dropdown
                 wrapper.addEventListener('scrollend', positionDropdown, { once: true });
 
-                // Fallback если scrollend не поддерживается
                 setTimeout(positionDropdown, 300);
                 return;
             }
@@ -518,7 +498,6 @@ function renderAiRecommendations(recommendations) {
         return;
     }
 
-    // Если пришёл массив строк — отображаем как есть
     let items = recommendations;
     if (typeof recommendations[0] === 'string') {
         items = recommendations;
@@ -526,7 +505,6 @@ function renderAiRecommendations(recommendations) {
         items = recommendations.map(r => r.text);
     }
 
-    // Просто карточки без меню и кнопок
     container.innerHTML = items.map(text => `
         <div class="ai-card-simple">
             <div class="ai-text">${escapeHtml(text)}</div>
@@ -629,7 +607,6 @@ function updateTaskField(field, value) {
                 showMessage(data.message || 'Обновлено', false);
             } else {
                 showMessage(data.message || 'Ошибка', true);
-                // Перезагрузить карточку при ошибке
                 openTaskCard(taskId);
             }
         })
@@ -731,7 +708,6 @@ document.getElementById('requestAiRecommendBtn')?.addEventListener('click', () =
         .then(response => response.json())
         .then(data => {
             if (data.success && data.analysis) {
-                // data.analysis — массив строк
                 renderAiRecommendations(data.analysis);
                 showMessage('Рекомендации получены', false);
             } else {
@@ -773,17 +749,15 @@ function showMessage(msg, isError = false) {
 
 // ================== СОЗДАНИЕ ЗАДАЧИ ========================
 
-let selectedUsers = []; // массив {id, name}
+let selectedUsers = [];
 
 // Открытие модалки создания задачи
 window.openCreateTaskModal = function () {
     const modal = document.getElementById('createTaskModal');
     if (!modal) return;
 
-    // Сброс
     selectedUsers = [];
 
-    // Добавляем текущего пользователя
     if (window.currentUserId && window.currentUserName) {
         selectedUsers.push({ id: window.currentUserId, name: window.currentUserName });
     }
@@ -791,14 +765,12 @@ window.openCreateTaskModal = function () {
     renderSelectedUsers();
     loadAssigneeSelect();
 
-    // Статус из канбана
     if (window.presetTaskStatus) {
         const statusSelect = document.getElementById('newTaskStatus');
         if (statusSelect) statusSelect.value = window.presetTaskStatus;
         window.presetTaskStatus = null;
     }
 
-    // Очистка полей
     document.getElementById('newTaskName').value = '';
     document.getElementById('newTaskDescription').value = '';
     document.getElementById('newTaskStatus').value = 'todo';
@@ -813,7 +785,6 @@ window.closeCreateTaskModal = function () {
     if (modal) modal.classList.add('hidden');
 };
 
-// Загрузка списка доступных исполнителей
 function loadAssigneeSelect() {
     const select = document.getElementById('newTaskUsersSelect');
     if (!select) return;
@@ -835,7 +806,6 @@ function loadAssigneeSelect() {
         });
 }
 
-// Отрисовка тегов выбранных исполнителей
 function renderSelectedUsers() {
     const container = document.getElementById('selectedUsersContainer');
     if (!container) return;
@@ -882,7 +852,7 @@ document.getElementById('newTaskUsersSelect')?.addEventListener('change', functi
                 renderSelectedUsers();
                 loadAssigneeSelect();
 
-                this.value = ""; // сброс select
+                this.value = "";
             }
         });
 });
@@ -934,10 +904,8 @@ document.getElementById('submitNewTaskBtn')?.addEventListener('click', function 
 });
 
 function updateTaskInDashboard(task) {
-    // Обновляем в режиме списка
     const tableRow = document.querySelector(`.tasks-table tbody tr[data-task-id="${task.id}"]`);
     if (tableRow) {
-        // Название
         tableRow.querySelector('.task-name').innerText = task.name;
 
         // Исполнители
@@ -967,7 +935,6 @@ function updateTaskInDashboard(task) {
         updatedCell.innerText = new Date().toLocaleDateString('ru-RU');
     }
 
-    // Обновляем в канбане
     const kanbanCard = document.querySelector(`.kanban-card[data-task-id="${task.id}"]`);
     if (kanbanCard) {
         kanbanCard.querySelector('.card-title').innerText = task.name;
@@ -979,7 +946,6 @@ function updateTaskInDashboard(task) {
         const dueSpan = kanbanCard.querySelector('.due-date');
         if (dueSpan) dueSpan.innerText = task.due_date || '—';
 
-        // Переносим карточку в другую колонку при смене статуса
         const newColumn = document.querySelector(`.kanban-column[data-status="${task.status}"] .kanban-tasks`);
         if (newColumn && !newColumn.contains(kanbanCard)) {
             kanbanCard.remove();
@@ -1005,13 +971,13 @@ window.openDeleteTaskModal = function (taskId) {
         return;
     }
     pendingDeleteTaskId = taskId;
-    modal.classList.remove('hidden'); // Убираем класс hidden
+    modal.classList.remove('hidden');
 };
 
 window.closeDeleteTaskModal = function () {
     const modal = document.getElementById('deleteTaskModal');
     if (modal) {
-        modal.classList.add('hidden'); // Добавляем класс hidden
+        modal.classList.add('hidden');
     }
     pendingDeleteTaskId = null;
 };
@@ -1038,7 +1004,6 @@ function executeDeleteTask() {
                 showMessage('Задача удалена', false);
                 closeDeleteTaskModal();
 
-                // Перезагружаем дашборд
                 if (window.currentProjectId) {
                     window.location.href = `/dashboard?project_id=${window.currentProjectId}&view=${window.currentView || 'list'}`;
                 } else {
@@ -1058,16 +1023,14 @@ function executeDeleteTask() {
 
 function bindDeleteButtons() {
     document.querySelectorAll('.delete-task-btn').forEach(btn => {
-        // Убираем старый обработчик
         btn.removeEventListener('click', handleDeleteClick);
-        // Добавляем новый
         btn.addEventListener('click', handleDeleteClick);
     });
 }
 
 function handleDeleteClick(e) {
-    e.stopPropagation(); // Останавливаем всплытие
-    e.preventDefault();   // Предотвращаем стандартное поведение
+    e.stopPropagation();
+    e.preventDefault();
 
     const taskId = this.dataset.taskId;
     if (taskId) {
@@ -1075,15 +1038,12 @@ function handleDeleteClick(e) {
     }
 }
 
-// Инициализация кнопки подтверждения удаления
 function initDeleteConfirmButton() {
     const confirmBtn = document.getElementById('confirmDeleteTaskBtn');
     if (confirmBtn) {
-        // Убираем старые обработчики
         const newConfirmBtn = confirmBtn.cloneNode(true);
         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
 
-        // Добавляем новый обработчик
         newConfirmBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1094,13 +1054,11 @@ function initDeleteConfirmButton() {
     }
 }
 
-// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
     bindDeleteButtons();
     initDeleteConfirmButton();
 });
 
-// Также инициализируем после динамического обновления контента
 window.refreshDeleteHandlers = function () {
     bindDeleteButtons();
     initDeleteConfirmButton();

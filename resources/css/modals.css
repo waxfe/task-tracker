@@ -80,11 +80,9 @@
     padding: 20px;
 }
 
-/* Запрещаем изменение размера текстового поля */
 .form-input textarea,
 textarea.form-input {
     resize: none;
-    /* ← запрещает изменение размера */
 }
 
 .modal-footer {
@@ -94,7 +92,6 @@ textarea.form-input {
     margin-top: 20px;
 }
 
-/* Кнопка "Отмена" */
 .btn-secondary {
     background: #F1F5F9;
     border: none;
@@ -111,7 +108,6 @@ textarea.form-input {
     background: #E2E8F0;
 }
 
-/* Кнопка "Создать проект" - единый стиль с другими кнопками */
 .btn-primary {
     background: #2F6FED;
     border: none;

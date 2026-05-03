@@ -140,8 +140,6 @@ body {
     display: block;
 }
 
-/* Обновите существующие стили для stats-row и stat-block */
-
 .stats-row {
     display: flex;
     gap: 16px;
@@ -153,20 +151,17 @@ body {
     background: #265FD0;
     border-radius: 20px;
     padding: 10px 10px;
-    /* Уменьшил padding с 20px на 16px */
     text-align: center;
     color: white;
 }
 
 .stat-number {
     font-size: 25px;
-    /* Уменьшил с 32px на 24px */
     font-weight: 700;
 }
 
 .stat-label {
     font-size: 14px;
-    /* Уменьшил с 14px на 13px */
     opacity: 0.8;
     margin-top: 4px;
 }
@@ -293,7 +288,6 @@ body {
     color: #2F6FED !important;
 }
 
-/* Отключаем нативные иконки во всех браузерах */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear,
 input[type="password"]::-webkit-contacts-auto-fill-button,

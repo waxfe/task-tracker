@@ -51,7 +51,6 @@
     width: 100%;
 }
 
-/* КРУЖОК, а не овал */
 .task-priority-badge {
     width: 20px;
     height: 20px;
@@ -123,7 +122,6 @@
     color: #1E293B;
 }
 
-/* Описание задачи — сохраняем стили при редактировании */
 .task-description-text {
     background: #F8FAFC;
     padding: 10px 12px;
@@ -156,7 +154,6 @@
     box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.1);
 }
 
-/* РАЗДЕЛИТЕЛЬ между описанием/комментариями и атрибутами */
 .task-right-column {
     border-left: 1px solid #E2E8F0;
     padding-left: 20px;
@@ -168,7 +165,6 @@
     font-weight: 600;
 }
 
-/* АТРИБУТЫ — единый стиль, без лишних пустот */
 .task-attributes {
     display: flex;
     flex-direction: column;
@@ -193,22 +189,17 @@
 .assignee-field,
 .task-select-wrapper {
     flex: 1;
-    /* Занимает всё оставшееся пространство */
     position: relative;
     display: flex;
     align-items: center;
     min-width: 0;
-    /* Важно, чтобы flex-контейнер не распирало текстом */
 }
 
-/* сам select */
 .assignee-field .task-select {
     width: 100%;
     padding-right: 36px;
-    /* место под кнопку */
 }
 
-/* кнопка поверх */
 .assignee-field .icon-add {
     position: absolute;
     right: 4px;
@@ -225,7 +216,6 @@
     cursor: pointer;
 }
 
-/* Только строка с кнопкой */
 .attr-row.with-button {
     grid-template-columns: 110px 1fr 32px;
 }
@@ -240,9 +230,6 @@
     color: #1E293B;
     background-color: white;
     box-sizing: border-box;
-    /* Это уже есть, но проверьте */
-
-    /* Добавляем это, чтобы убрать лишние отступы в Chrome */
     max-width: 100%;
     flex: 1;
 }
@@ -257,8 +244,6 @@
     color: #1E293B;
     background-color: white;
     box-sizing: border-box;
-
-    /* Сбрасываем стандартный вид и добавляем свою иконку */
     appearance: none;
     -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748B'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -266,12 +251,8 @@
     background-position: right 10px center;
     background-size: 14px;
     padding-right: 30px;
-    /* Отступ справа под иконку */
 }
 
-
-
-/* Для поля исполнителя убираем иконку, так как там синяя кнопка '+' */
 #taskAssigneeSelect {
     background-image: none;
     padding-right: 40px;
@@ -282,7 +263,6 @@
 .task-date-input {
     flex: 1;
     min-width: 0;
-    /* Позволяет элементу сжиматься внутри flex */
 }
 
 .task-select,
@@ -296,11 +276,7 @@
     color: #1E293B;
     background-color: white;
     box-sizing: border-box;
-    /* Чтобы padding не увеличивал ширину */
-
-    /* Исправляем обрезание текста */
     appearance: none;
-    /* Убираем дефолтные стрелки браузера, если мешают */
     -webkit-appearance: none;
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -312,11 +288,9 @@
     right: 4px;
     top: 4px;
     bottom: 4px;
-    /* Делаем её четко внутри рамки селекта */
     width: 28px;
     height: 28px;
     background: #2F6FED !important;
-    /* Насильно ставим фон */
     color: white !important;
     border-radius: 6px;
     border: none;
@@ -331,33 +305,26 @@
 
 .attr-row.readonly {
     align-items: center;
-    /* Центрирует label и значение по вертикали */
     min-height: 36px;
-    /* Чтобы строка была такой же высоты, как и соседние с инпутами */
 }
 
-/* Общий стиль для "кнопок" атрибутов (селекты и дата) */
 .task-attributes .task-select,
 .task-attributes .task-date-input {
     color: #000000;
     font-weight: 500;
     background-color: #F0F7FF;
-    /* Очень светлый синий фон, чтобы походило на кнопку */
     border: 1px solid #265FD0;
-    /* Синяя рамка */
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-/* Эффект при наведении, как у кнопки */
 .task-attributes .task-select:hover,
 .task-attributes .task-date-input:hover {
     background-color: #E0EFFF;
     border-color: #1a5ad1;
 }
 
-/* Возвращаем иконку выпадающего списка, но делаем её синей */
 .task-attributes .task-select {
     appearance: none;
     -webkit-appearance: none;
@@ -368,7 +335,6 @@
     padding-right: 30px;
 }
 
-/* Опции внутри выпадающего списка оставляем стандартными для читаемости */
 .task-attributes option {
     background-color: white;
     color: #1E293B;
@@ -379,18 +345,12 @@
     background: transparent;
     padding-left: 0;
     font-weight: 500;
-
-    /* Добавляем эти свойства для выравнивания */
     height: auto;
-    /* Сбрасываем фиксированную высоту */
     line-height: 1.2;
-    /* Устанавливаем нормальную высоту строки */
     display: flex;
     align-items: center;
     margin-top: 0;
 }
-
-
 
 .task-select {
     overflow: hidden;
@@ -398,7 +358,6 @@
     white-space: nowrap;
 }
 
-/* Цвет текста приоритета */
 .priority-select option[value="high"] {
     color: #DC2626;
 }
@@ -422,7 +381,6 @@
     flex: 1;
 }
 
-/* Фирменный цвет для календаря */
 input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
     filter: invert(0.3);
@@ -432,7 +390,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     filter: invert(0) sepia(1) hue-rotate(200deg) brightness(0.8);
 }
 
-/* НИЖНЯЯ СЕТКА: AI (скролл) + история (без скролла) */
 .task-bottom-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -469,7 +426,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     gap: 10px;
 }
 
-/* История — без скролла (растянется) */
 .history-scroll {
     display: flex;
     flex-direction: column;
@@ -533,7 +489,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     flex-direction: column;
     gap: 10px;
     overflow: visible;
-    /* dropdown не обрезается */
     padding-bottom: 4px;
 }
 
@@ -574,7 +529,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     gap: 12px;
 }
 
-/* Новая область комментария */
 .new-comment-area {
     display: flex;
     gap: 8px;
@@ -615,7 +569,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     font-size: 13px;
 }
 
-/* Выпадающее меню комментария */
 .comment-menu-wrapper {
     position: relative;
     margin-left: auto;
@@ -680,7 +633,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     background: #FEF2F2;
 }
 
-/* Выпадающее меню комментария */
 .comment-menu-wrapper {
     position: relative;
     margin-left: auto;
@@ -783,7 +735,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 
 
-
 /*============================ ИСТОРИЯ ============================= */
 .task-history-section {
     max-height: 300px;
@@ -796,8 +747,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     gap: 10px;
 }
 
-/* ====================== СОЗДАНИЕ ЗАДАЧИ ===================================
-/* Стили для полей ввода в модалке создания задачи */
+/* ====================== СОЗДАНИЕ ЗАДАЧИ =================================== */
 .task-input {
     width: 100%;
     padding: 10px 12px;
@@ -814,13 +764,11 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.1);
 }
 
-/* Для textarea в модалке создания */
 .task-field-group textarea.task-input {
     resize: none;
     min-height: 80px;
 }
 
-/* Специфичные стили для модалки создания (если отличаются) */
 #createTaskModal .modal-footer {
     display: flex;
     justify-content: flex-end;
@@ -924,5 +872,4 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    /* было 6 → чуть больше */
 }

@@ -108,7 +108,6 @@ window.saveDescription = function () {
         body: JSON.stringify({ description: newDescription })
     })
         .then(response => {
-            // Проверяем статус ответа
             if (!response.ok) {
                 return response.json().then(err => {
                     throw new Error(err.message || `HTTP ${response.status}`);
@@ -118,18 +117,15 @@ window.saveDescription = function () {
         })
         .then(data => {
             if (data.success) {
-                // Успешное сохранение
                 display.textContent = newDescription || 'Добавить описание...';
                 display.classList.toggle('empty', !newDescription);
                 display.classList.remove('hidden');
                 input.classList.add('hidden');
                 saveBtn.classList.add('hidden');
 
-                // Показываем временное уведомление об успехе
                 showSuccessMessage('Описание сохранено');
             } else {
                 showErrorMessage(data.message || 'Ошибка при сохранении');
-                // Возвращаемся в режим редактирования
                 display.classList.add('hidden');
                 input.classList.remove('hidden');
                 saveBtn.classList.remove('hidden');
@@ -138,7 +134,6 @@ window.saveDescription = function () {
         .catch(error => {
             console.error('Error:', error);
             showErrorMessage(error.message || 'Ошибка соединения с сервером');
-            // Возвращаемся в режим редактирования
             display.classList.add('hidden');
             input.classList.remove('hidden');
             saveBtn.classList.remove('hidden');
@@ -149,7 +144,6 @@ window.saveDescription = function () {
         });
 };
 
-// Простое уведомление об успехе
 function showSuccessMessage(message) {
     const wrapper = document.querySelector('.project-description-wrapper');
     const msgDiv = document.createElement('div');
@@ -171,7 +165,6 @@ function showSuccessMessage(message) {
     }, 3000);
 }
 
-// Простое уведомление об ошибке
 function showErrorMessage(message) {
     const wrapper = document.querySelector('.project-description-wrapper');
     const msgDiv = document.createElement('div');
@@ -193,7 +186,6 @@ function showErrorMessage(message) {
     }, 3000);
 }
 
-// Функция удаления подсветки ошибки
 function removeErrorHighlight(element) {
     element.classList.remove('error-highlight');
     const errorMsg = document.querySelector('.field-error-message');
@@ -227,7 +219,6 @@ window.toggleProjectMenu = function () {
     }
 };
 
-// Закрыть меню при клике вне его
 document.addEventListener('click', function (event) {
     const menu = document.getElementById('projectMenu');
     const btn = document.querySelector('.project-menu-btn');
@@ -238,7 +229,6 @@ document.addEventListener('click', function (event) {
     }
 });
 
-// В меню проекта вызываем модалки вместо прямых действий
 window.deleteProject = function () {
     openConfirmDeleteProjectModal(window.projectId);
 };
@@ -343,7 +333,6 @@ function initCharts(statsData, tasksData, membersData) {
         return;
     }
 
-    // Проверяем, есть ли данные для графиков
     const hasTasks = statsData.total > 0;
     const chartsGrid = document.querySelector('.charts-grid');
 
@@ -380,7 +369,7 @@ function initCharts(statsData, tasksData, membersData) {
                 cutout: '65%',
                 plugins: {
                     tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw} задач` } },
-                    legend: { display: false }  // Скрываем легенду, т.к. она выведена отдельно
+                    legend: { display: false }
                 }
             },
             plugins: [{
@@ -390,7 +379,6 @@ function initCharts(statsData, tasksData, membersData) {
                     const height = chart.height;
                     ctx.restore();
 
-                    // Увеличиваем размер шрифта для общего числа
                     ctx.font = 'bold 28px "Inter"';
                     ctx.fillStyle = '#1E293B';
                     ctx.textAlign = 'center';
@@ -406,10 +394,8 @@ function initCharts(statsData, tasksData, membersData) {
     }
 
     // ===== 2. Динамика выполнения задач (линейный график) =====
-    // Данные из реальных задач (создаем историю по датам)
     const tasks = tasksData || [];
 
-    // Группируем задачи по дате создания/завершения
     const tasksByDate = {};
     tasks.forEach(task => {
         const date = task.created_at ? task.created_at.split('T')[0] : null;
@@ -424,7 +410,6 @@ function initCharts(statsData, tasksData, membersData) {
     const createdData = sortedDates.map(d => tasksByDate[d].created);
     const completedData = sortedDates.map(d => tasksByDate[d].completed);
 
-    // ===== 2. Динамика выполнения задач (линейный график) =====
     const lineChart = document.getElementById('completionLineChart');
     if (lineChart) {
         new Chart(lineChart, {
@@ -443,7 +428,7 @@ function initCharts(statsData, tasksData, membersData) {
                     y: {
                         beginAtZero: true,
                         stepSize: 1,
-                        ticks: { stepSize: 1, precision: 0 },  // Только целые числа
+                        ticks: { stepSize: 1, precision: 0 },
                         title: { display: true, text: 'Количество задач' }
                     },
                     x: { title: { display: true, text: 'Дата' } }
@@ -528,7 +513,6 @@ window.refreshAIAnalysis = function () {
         .then(data => {
             if (data.success && data.analysis) {
                 const recommendations = Array.isArray(data.analysis) ? data.analysis : [data.analysis];
-                // Убираем кавычки в начале и конце каждой строки
                 const cleaned = recommendations.map(r =>
                     String(r)
                         .replace(/^["'\s]+|["'\s]+$/g, '')
@@ -548,14 +532,12 @@ window.refreshAIAnalysis = function () {
 
 // ========== УЧАСТНИКИ ==========
 
-// Переменные для хранения данных удаляемого участника
 let pendingDeleteData = {
     projectId: null,
     userId: null,
     element: null
 };
 
-// Глобальное уведомление
 window.showMemberMessage = function (message, isError = false) {
     const oldMsg = document.querySelector('.member-toast-message');
     if (oldMsg) oldMsg.remove();
@@ -579,9 +561,7 @@ window.showMemberMessage = function (message, isError = false) {
     setTimeout(() => msgDiv.remove(), 3000);
 };
 
-// Открытие модалки подтверждения удаления
 window.openConfirmDeleteMemberModal = function (projectId, userId, element) {
-    console.log('openConfirmDeleteMemberModal called', projectId, userId, element); // Отладка
     pendingDeleteData = { projectId, userId, element };
     const modal = document.getElementById('confirmDeleteMemberModal');
     if (modal) {
@@ -592,7 +572,6 @@ window.openConfirmDeleteMemberModal = function (projectId, userId, element) {
     }
 };
 
-// Закрытие модалки подтверждения удаления
 window.closeConfirmDeleteMemberModal = function () {
     const modal = document.getElementById('confirmDeleteMemberModal');
     if (modal) modal.classList.add('hidden');
@@ -601,7 +580,6 @@ window.closeConfirmDeleteMemberModal = function () {
 
 function executeDeleteMember() {
     const { projectId, userId, element } = pendingDeleteData;
-    console.log('executeDeleteMember', projectId, userId, element); // Отладка
 
     if (!projectId || !userId) {
         console.error('No pending delete data');
@@ -648,7 +626,6 @@ window.addMemberToDOM = function (user) {
     const currentUserId = window.currentUserId || null;
     const isCurrentUserOwner = window.isOwner || false;
 
-    // Определяем, показывать ли крестик (только для member, и если текущий пользователь владелец)
     const showDeleteButton = isCurrentUserOwner && user.id != currentUserId;
 
     const memberCard = document.createElement('div');
@@ -684,13 +661,11 @@ function escapeHtml(str) {
     });
 }
 
-// Добавление участника (открывает модалку)
 window.addMember = function () {
     const modal = document.getElementById('addMemberModal');
     if (modal) modal.classList.remove('hidden');
 };
 
-// Изменение роли
 window.changeRole = function (projectId, userId, selectElement) {
     const newRole = selectElement.value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -712,23 +687,18 @@ window.changeRole = function (projectId, userId, selectElement) {
             if (data.success) {
                 window.showMemberMessage(data.message, false);
 
-                // Обновляем UI в зависимости от новой роли
                 const memberCard = selectElement.closest('.member-card');
                 const currentUserId = window.currentUserId;
                 const isOwner = window.isOwner;
 
-                // Находим кнопку удаления
                 const deleteBtn = memberCard.querySelector('.remove-member-btn');
 
                 if (newRole === 'owner') {
-                    // Если стал владельцем - удаляем кнопку удаления
                     if (deleteBtn) deleteBtn.remove();
-                    // Блокируем select для нового владельца (нельзя изменить свою роль)
                     if (userId == currentUserId) {
                         selectElement.disabled = true;
                     }
                 } else {
-                    // Если стал участником - добавляем кнопку удаления (если текущий пользователь владелец)
                     if (isOwner && userId != currentUserId && !deleteBtn) {
                         const deleteBtnHtml = document.createElement('button');
                         deleteBtnHtml.className = 'remove-member-btn';
@@ -754,7 +724,6 @@ window.changeRole = function (projectId, userId, selectElement) {
 
 // ========== МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ УЧАСТНИКА ==========
 window.openAddMemberModal = function () {
-    // Сбрасываем форму и кнопку перед открытием
     const form = document.getElementById('addMemberForm');
     if (form) form.reset();
 
@@ -775,7 +744,6 @@ window.closeAddMemberModal = function () {
     const form = document.getElementById('addMemberForm');
     if (form) form.reset();
 
-    // Восстанавливаем кнопку в исходное состояние
     const submitBtn = document.querySelector('#addMemberForm button[type="submit"]');
     if (submitBtn) {
         submitBtn.innerHTML = 'Добавить';
@@ -786,23 +754,19 @@ window.closeAddMemberModal = function () {
 // ========== ИНИЦИАЛИЗАЦИЯ ==========
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Кнопка подтверждения удаления проекта
     const confirmDeleteProjectBtn = document.getElementById('confirmDeleteProjectBtn');
     if (confirmDeleteProjectBtn) {
         confirmDeleteProjectBtn.addEventListener('click', executeDeleteProject);
     }
 
-    // Кнопка подтверждения выхода из проекта
     const confirmLeaveProjectBtn = document.getElementById('confirmLeaveProjectBtn');
     if (confirmLeaveProjectBtn) {
         confirmLeaveProjectBtn.addEventListener('click', executeLeaveProject);
     }
-    // Переменные для графиков
     if (typeof window.statsData !== 'undefined') {
         initCharts(window.statsData, window.tasksData || [], window.membersData || []);
     }
 
-    // Загрузка AI анализа
     if (window.lastAnalysis && window.lastAnalysis.length > 0) {
         const container = document.getElementById('aiAnalysisContainer');
         const cleaned = window.lastAnalysis.map(r =>
@@ -814,16 +778,13 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = cleaned.map(r => `<div class="ai-insight">${escapeHtml(r)}</div>`).join('');
     }
 
-    // Кнопка подтверждения удаления
     const confirmBtn = document.getElementById('confirmDeleteMemberBtn');
     if (confirmBtn) {
         confirmBtn.addEventListener('click', executeDeleteMember);
     }
 
-    // Форма добавления участника
     const form = document.getElementById('addMemberForm');
     if (form) {
-        // Убираем старый обработчик, чтобы не дублировать
         const oldHandler = form.getAttribute('data-listener');
         if (!oldHandler) {
             form.setAttribute('data-listener', 'true');
@@ -859,7 +820,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         } else {
                             window.showMemberMessage(data.message || 'Ошибка при добавлении участника', true);
-                            // Восстанавливаем кнопку
                             submitBtn.innerHTML = originalText;
                             submitBtn.disabled = false;
                         }
@@ -867,7 +827,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     .catch(error => {
                         console.error('Error:', error);
                         window.showMemberMessage('Ошибка соединения', true);
-                        // Восстанавливаем кнопку
                         submitBtn.innerHTML = originalText;
                         submitBtn.disabled = false;
                     });

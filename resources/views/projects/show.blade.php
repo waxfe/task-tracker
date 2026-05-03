@@ -14,9 +14,7 @@
     window.lastAnalysis = @json($lastAnalysisOutput);
 </script>
     <div class="project-page">
-        {{-- Заголовок проекта --}}
         <div class="project-header">
-{{-- стало --}}
 <div class="project-title-edit-wrapper">
     <h1 class="project-title" id="projectTitleDisplay"
         @if($isOwner) onclick="editTitle()" title="Нажмите для редактирования" @endif>
@@ -30,9 +28,25 @@
         </button>
     @endif
 </div>
+ <div class="project-actions">
+        <div class="dropdown">
+            <button class="project-menu-btn" onclick="toggleProjectMenu()">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <div id="projectMenu" class="dropdown-menu hidden">
+                @if($isOwner)
+                    <button onclick="deleteProject()" class="dropdown-item delete">
+                        <i class="fas fa-trash"></i> Удалить проект
+                    </button>
+                @endif
+                <button onclick="leaveProject()" class="dropdown-item">
+                    <i class="fas fa-sign-out-alt"></i> Выйти из проекта
+                </button>
+            </div>
+        </div>
+    </div>
             </div>
 
-            {{-- Описание проекта с inline-редактированием --}}
             <div class="project-description-wrapper">
                 <div id="projectDescriptionDisplay" class="project-description {{ $project->description ? '' : 'empty' }}"
                     @if($isOwner) onclick="editDescription()" @endif>

@@ -1,5 +1,4 @@
 <aside class="sidebar">
-    {{-- Логотип --}}
     <div class="sidebar-logo">
         <span class="logo-text">TaskAssist</span>
     </div>

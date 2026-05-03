@@ -2,7 +2,6 @@
     <div class="modal-overlay" onclick="closeTaskModal()"></div>
     <div class="modal-container task-modal-container">
 
-        {{-- Шапка --}}
         <div class="task-modal-header">
             <div class="task-title-section">
                 <div id="taskTitleDisplay" class="task-title-display" onclick="editTaskTitle()">Загрузка...</div>
@@ -17,9 +16,7 @@
 
         <div class="task-modal-divider"></div>
 
-        {{-- Основная сетка --}}
         <div class="task-modal-grid">
-            {{-- ЛЕВАЯ КОЛОНКА --}}
             <div class="task-left-column">
                 {{-- Описание --}}
                 <div class="task-field-group">
@@ -42,7 +39,6 @@
                 </div>
             </div>
 
-            {{-- ПРАВАЯ КОЛОНКА (атрибуты) --}}
             <div class="task-right-column">
                 <h4>Атрибуты задачи</h4>
                 <div class="task-attributes">
@@ -88,7 +84,6 @@
 
         <div class="task-modal-divider"></div>
 
-        {{-- Нижняя сетка --}}
         <div class="task-bottom-grid">
             <div class="task-ai-section">
                 <div class="section-header">
@@ -108,7 +103,6 @@
     </div>
 </div>
 
-{{-- Модалка подтверждения удаления задачи --}}
 <div id="deleteTaskModal" class="modal hidden">
     <div class="modal-overlay" onclick="closeDeleteTaskModal()"></div>
     <div class="modal-container" style="max-width: 400px;">
@@ -128,7 +122,6 @@
     </div>
 </div>
 
-{{-- Модалка подтверждения удаления комментария --}}
 <div id="deleteCommentModal" class="modal hidden">
     <div class="modal-overlay" onclick="closeDeleteCommentModal()"></div>
     <div class="modal-container" style="max-width: 400px;" onclick="event.stopPropagation()">
