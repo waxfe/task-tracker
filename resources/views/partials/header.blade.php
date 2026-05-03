@@ -11,8 +11,8 @@
 
     <div class="header-right">
         <div class="ai-recommendation">
-            <i class="fas fa-robot"></i>
-            <span id="aiTip">У вас 3 задачи в работе</span>
+            <i class="fas fa-chart-line"></i>
+            <span id="userTasksCount">У вас {{ $activeTasksCount }} активных задач</span>
         </div>
 
         <form method="POST" action="{{ route('logout') }}" class="logout-form">

@@ -32,8 +32,15 @@ class ProjectController extends Controller
         $projects = $user->projects;
         $selectedProject = $project;
 
-        // Сначала получаем задачи через get()
+        // Получить задачи
         $tasks = $project->tasks()->with('users', 'aiInteractions')->get();
+
+        $activeTasksCount = $project->tasks()
+            ->whereIn('status', ['todo', 'in_progress'])
+            ->whereHas('users', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->count();
 
         $stats = [
             'total' => $tasks->count(),
@@ -62,7 +69,7 @@ class ProjectController extends Controller
 
         $lastAnalysisOutput = $lastAnalysis ? json_decode($lastAnalysis->output_data, true) : [];
 
-        return view('projects.show', compact('project', 'projects', 'selectedProject', 'tasks', 'stats', 'members', 'currentUser', 'isOwner', 'lastAnalysisOutput'));
+        return view('projects.show', compact('project', 'projects', 'selectedProject', 'tasks', 'stats', 'members', 'currentUser', 'isOwner', 'lastAnalysisOutput', 'activeTasksCount'));
     }
 
     public function store(Request $request)

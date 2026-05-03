@@ -18,8 +18,16 @@ class DashboardController extends Controller
 
         $tasks = $selectedProject ? $selectedProject->tasks()->with('users', 'aiInteractions')->get() : collect();
 
+        $activeTasksCount = $selectedProject
+            ? $selectedProject->tasks()
+                ->whereIn('status', ['todo', 'in_progress'])
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })->count()
+            : 0;
+
         $viewMode = request()->input('view', 'list');
 
-        return view('dashboard.index', compact('user', 'projects', 'selectedProject', 'tasks', 'viewMode'));
+        return view('dashboard.index', compact('user', 'projects', 'selectedProject', 'tasks', 'viewMode', 'activeTasksCount'));
     }
 }

@@ -756,8 +756,10 @@ window.openCreateTaskModal = function () {
     const modal = document.getElementById('createTaskModal');
     if (!modal) return;
 
+    // Сброс
     selectedUsers = [];
 
+    // Добавляем текущего пользователя
     if (window.currentUserId && window.currentUserName) {
         selectedUsers.push({ id: window.currentUserId, name: window.currentUserName });
     }
@@ -765,17 +767,18 @@ window.openCreateTaskModal = function () {
     renderSelectedUsers();
     loadAssigneeSelect();
 
-    if (window.presetTaskStatus) {
-        const statusSelect = document.getElementById('newTaskStatus');
-        if (statusSelect) statusSelect.value = window.presetTaskStatus;
-        window.presetTaskStatus = null;
-    }
-
+    // Очистка полей (но статус пока не трогаем)
     document.getElementById('newTaskName').value = '';
     document.getElementById('newTaskDescription').value = '';
-    document.getElementById('newTaskStatus').value = 'todo';
     document.getElementById('newTaskPriority').value = 'medium';
     document.getElementById('newTaskDueDate').value = '';
+
+    if (window.presetTaskStatus) {
+        document.getElementById('newTaskStatus').value = window.presetTaskStatus;
+        window.presetTaskStatus = null;
+    } else {
+        document.getElementById('newTaskStatus').value = 'todo';
+    }
 
     modal.classList.remove('hidden');
 };
