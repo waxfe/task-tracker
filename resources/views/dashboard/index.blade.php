@@ -137,7 +137,13 @@
     </div>
 </div>
     <div class="card-footer">
-        <span class="priority-{{ $task->priority }}">{{ $task->priority }}</span>
+        <span class="priority-{{ $task->priority }}">
+    @switch($task->priority)
+        @case('low') Низкий @break
+        @case('medium') Средний @break
+        @case('high') Высокий @break
+    @endswitch
+</span>
         <span class="due-date">{{ $task->due_date ? $task->due_date->format('d.m.Y') : '—' }}</span>
     </div>
    <div class="kanban-card-actions">

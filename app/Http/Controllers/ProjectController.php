@@ -69,7 +69,18 @@ class ProjectController extends Controller
 
         $lastAnalysisOutput = $lastAnalysis ? json_decode($lastAnalysis->output_data, true) : [];
 
-        return view('projects.show', compact('project', 'projects', 'selectedProject', 'tasks', 'stats', 'members', 'currentUser', 'isOwner', 'lastAnalysisOutput', 'activeTasksCount'));
+        return view('projects.show', compact(
+            'project',
+            'projects',
+            'selectedProject',
+            'tasks',
+            'stats',
+            'members',
+            'currentUser',
+            'isOwner',
+            'lastAnalysisOutput',
+            'activeTasksCount'
+        ));
     }
 
     public function store(Request $request)
