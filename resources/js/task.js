@@ -979,10 +979,9 @@ function updateTaskInDashboard(task) {
             // Обновляем приоритет
             const prioritySpan = kanbanCard.querySelector('[class*="priority-"]');
             if (prioritySpan) {
-                // Удаляем все классы приоритета
                 prioritySpan.classList.remove('priority-low', 'priority-medium', 'priority-high');
                 prioritySpan.classList.add(`priority-${task.priority}`);
-                prioritySpan.innerText = task.priority;
+                prioritySpan.innerText = translatePriority(task.priority);
             }
 
             // Обновляем дату

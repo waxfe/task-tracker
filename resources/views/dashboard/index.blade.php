@@ -103,7 +103,7 @@
             </table>
         </div>
     @else
-    {{-- РЕЖИМ КАНБАН --}}
+  {{-- РЕЖИМ КАНБАН --}}
     <div class="kanban-board">
         @php
             $statuses = [
@@ -127,34 +127,38 @@
                 
                 <div class="kanban-tasks" id="kanban-{{ $statusKey }}">
                     @foreach($tasksByStatus[$statusKey] as $task)
-                        <div class="kanban-card" onclick="openTaskCard({{ $task->task_id }})" style="position: relative;">
-    <div class="kanban-card-header">
-    <div class="card-title-wrapper">
-        <span class="card-title">{{ $task->name }}</span>
-        @if($task->aiInteractions->count() > 0)
-            <i class="fas fa-brain ai-brain-icon" title="Есть AI-рекомендации"></i>
-        @endif
-    </div>
-</div>
-    <div class="card-footer">
-        <span class="priority-{{ $task->priority }}">{{ $task->priority }}</span>
-        <span class="due-date">{{ $task->due_date ? $task->due_date->format('d.m.Y') : '—' }}</span>
-    </div>
-   <div class="kanban-card-actions">
-    <button class="delete-task-btn" data-task-id="{{ $task->task_id }}" title="Удалить задачу" onclick="event.stopPropagation();">
-        <i class="fas fa-trash-alt"></i>
-    </button>
-</div>
-</div>
+                        <div class="kanban-card" data-task-id="{{ $task->task_id }}" onclick="openTaskCard({{ $task->task_id }})" style="position: relative;">
+                            <div class="kanban-card-header">
+                                <div class="card-title-wrapper">
+                                    <span class="card-title">{{ $task->name }}</span>
+                                    @if($task->aiInteractions->count() > 0)
+                                        <i class="fas fa-brain ai-brain-icon" title="Есть AI-рекомендации"></i>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span class="priority-{{ $task->priority }}">
+                                    @switch($task->priority)
+                                        @case('low') Низкий @break
+                                        @case('medium') Средний @break
+                                        @case('high') Высокий @break
+                                        @default {{ $task->priority }}
+                                    @endswitch
+                                </span>
+                                <span class="due-date">{{ $task->due_date ? $task->due_date->format('d.m.Y') : '—' }}</span>
+                            </div>
+                            <div class="kanban-card-actions">
+                                <button class="delete-task-btn" data-task-id="{{ $task->task_id }}" title="Удалить задачу" onclick="event.stopPropagation();">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
                     @endforeach
                 </div>
 
-                <div class="kanban-card-actions">
-</div>
-                
                 <button class="kanban-add-task" onclick="openCreateTaskModalWithStatus('{{ $statusKey }}')">
-    <i class="fas fa-plus"></i> Добавить задачу
-</button>
+                    <i class="fas fa-plus"></i> Добавить задачу
+                </button>
             </div>
         @endforeach
     </div>
