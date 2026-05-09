@@ -103,7 +103,7 @@
             </table>
         </div>
     @else
-    {{-- РЕЖИМ КАНБАН --}}
+  {{-- РЕЖИМ КАНБАН --}}
     <div class="kanban-board">
         @php
             $statuses = [
@@ -155,12 +155,9 @@
                     @endforeach
                 </div>
 
-                <div class="kanban-card-actions">
-</div>
-                
                 <button class="kanban-add-task" onclick="openCreateTaskModalWithStatus('{{ $statusKey }}')">
-    <i class="fas fa-plus"></i> Добавить задачу
-</button>
+                    <i class="fas fa-plus"></i> Добавить задачу
+                </button>
             </div>
         @endforeach
     </div>
