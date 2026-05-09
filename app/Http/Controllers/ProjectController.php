@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\AiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectController extends Controller
 {
@@ -390,47 +391,53 @@ class ProjectController extends Controller
         Формат ответа: только массив JSON, без пояснений, без markdown. 
         Пример: [\"⚠️ Срочно обработать просроченные задачи\", \"📊 Перераспределить нагрузку\"]";
 
-        $reply = $this->aiService->analyze($prompt);
+        $cacheKey = "ai_project_{$project->project_id}_" . $project->updated_at->timestamp;
 
-        $reply = preg_replace('/```json\s*/i', '', $reply);
-        $reply = preg_replace('/```\s*/i', '', $reply);
-        $reply = trim($reply);
+        $result = Cache::remember($cacheKey, 3600, function () use ($prompt, $user, $project, $stats) {
+            $reply = $this->aiService->analyze($prompt);
 
-        $reccomendations = json_decode($reply, true);
+            $reply = preg_replace('/```json\s*/i', '', $reply);
+            $reply = preg_replace('/```\s*/i', '', $reply);
+            $reply = trim($reply);
 
-        if (is_array($reccomendations)) {
-            $output = array_map(function ($r) {
-                $r = trim($r, '"\'');
-                $r = str_replace('\\"', '', $r);
-                $r = str_replace('"', '', $r);
-                return trim($r);
-            }, $reccomendations);
-            $outputForDB = json_encode($output);
-        } else {
-            // Если AI не вернул JSON — разбиваем по строкам
-            $output = explode("\n", trim($reply));
-            $output = array_values(array_filter($output, fn($line) => strlen($line) > 10));
-            $output = array_map(function ($r) {
-                $r = trim($r, '"\'- ');
-                $r = str_replace('\\"', '', $r);
-                $r = str_replace('"', '', $r);
-                return trim($r);
-            }, $output);
-            $outputForDB = json_encode($output);
-        }
+            $reccomendations = json_decode($reply, true);
 
-        AiInteraction::create([
-            'user_id' => $user->id,
-            'project_id' => $project->project_id,
-            'request_type' => 'project_analysis',
-            'input_data' => json_encode(['stats' => $stats, 'name' => $project->name]),
-            'output_data' => $outputForDB,
-            'request_date' => now(),
-        ]);
+            if (is_array($reccomendations)) {
+                $output = array_map(function ($r) {
+                    $r = trim($r, '"\'');
+                    $r = str_replace('\\"', '', $r);
+                    $r = str_replace('"', '', $r);
+                    return trim($r);
+                }, $reccomendations);
+                $outputForDB = json_encode($output);
+            } else {
+                // Если AI не вернул JSON — разбиваем по строкам
+                $output = explode("\n", trim($reply));
+                $output = array_values(array_filter($output, fn($line) => strlen($line) > 10));
+                $output = array_map(function ($r) {
+                    $r = trim($r, '"\'- ');
+                    $r = str_replace('\\"', '', $r);
+                    $r = str_replace('"', '', $r);
+                    return trim($r);
+                }, $output);
+                $outputForDB = json_encode($output);
+            }
+
+            AiInteraction::create([
+                'user_id' => $user->id,
+                'project_id' => $project->project_id,
+                'request_type' => 'project_analysis',
+                'input_data' => json_encode(['stats' => $stats, 'name' => $project->name]),
+                'output_data' => $outputForDB,
+                'request_date' => now(),
+            ]);
+
+            return $output;
+        });
 
         return response()->json([
             'success' => true,
-            'analysis' => $output,
+            'analysis' => $result,
         ]);
     }
 }

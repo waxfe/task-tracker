@@ -4,9 +4,12 @@ namespace App\Models;
 
 use App\Models\Comment as ModelsComment;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
+    use HasFactory;
+
     protected $primaryKey = 'task_id';
     protected $fillable = ['name', 'description', 'status', 'priority', 'due_date', 'project_id'];
 

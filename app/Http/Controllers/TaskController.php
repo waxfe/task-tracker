@@ -10,6 +10,7 @@ use App\Models\TaskHistory;
 use App\Services\AiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class TaskController extends Controller
 {
@@ -266,6 +267,7 @@ class TaskController extends Controller
         $user = Auth::user();
         $project = $task->project;
 
+
         $isOwner = $project->users()->where('user_id', $user->id)->first()->pivot->role_in_project === 'owner';
 
         if (!$isOwner) {
@@ -328,46 +330,52 @@ class TaskController extends Controller
         Формат ответа: только массив JSON, без пояснений, без markdown. 
         Пример: [\"⚠️ Задача выглядит перегруженной. Разбейте на подзадачи\", \"📊 ⚠️ Возможен риск срыва срока выполнения. Рекомендуется уточнить требования. \"]";
 
-        $reply = $this->aiService->analyze($prompt);
+        $cacheKey = "ai_task_{$task->task_id}_" . $task->updated_at->timestamp;
 
-        $reply = preg_replace('/```json\s*/i', '', $reply);
-        $reply = preg_replace('/```\s*/i', '', $reply);
-        $reply = trim($reply);
+        $result = Cache::remember($cacheKey, 3600, function () use ($prompt, $user, $task, $stats) {
+            $reply = $this->aiService->analyze($prompt);
 
-        $reccomendations = json_decode($reply, true);
+            $reply = preg_replace('/```json\s*/i', '', $reply);
+            $reply = preg_replace('/```\s*/i', '', $reply);
+            $reply = trim($reply);
 
-        if (is_array($reccomendations)) {
-            $output = array_map(function ($r) {
-                $r = trim($r, '"\'');
-                $r = str_replace('\\"', '', $r);
-                $r = str_replace('"', '', $r);
-                return trim($r);
-            }, $reccomendations);
-            $outputForDB = json_encode($output);
-        } else {
-            $output = explode("\n", trim($reply));
-            $output = array_values(array_filter($output, fn($line) => strlen($line) > 10));
-            $output = array_map(function ($r) {
-                $r = trim($r, '"\'- ');
-                $r = str_replace('\\"', '', $r);
-                $r = str_replace('"', '', $r);
-                return trim($r);
-            }, $output);
-            $outputForDB = json_encode($output);
-        }
+            $reccomendations = json_decode($reply, true);
 
-        AiInteraction::create([
-            'user_id' => $user->id,
-            'task_id' => $task->task_id,
-            'request_type' => 'task_analysis',
-            'input_data' => json_encode(['stats' => $stats]),
-            'output_data' => $outputForDB,
-            'request_date' => now(),
-        ]);
+            if (is_array($reccomendations)) {
+                $output = array_map(function ($r) {
+                    $r = trim($r, '"\'');
+                    $r = str_replace('\\"', '', $r);
+                    $r = str_replace('"', '', $r);
+                    return trim($r);
+                }, $reccomendations);
+                $outputForDB = json_encode($output);
+            } else {
+                $output = explode("\n", trim($reply));
+                $output = array_values(array_filter($output, fn($line) => strlen($line) > 10));
+                $output = array_map(function ($r) {
+                    $r = trim($r, '"\'- ');
+                    $r = str_replace('\\"', '', $r);
+                    $r = str_replace('"', '', $r);
+                    return trim($r);
+                }, $output);
+                $outputForDB = json_encode($output);
+            }
+
+            AiInteraction::create([
+                'user_id' => $user->id,
+                'task_id' => $task->task_id,
+                'request_type' => 'task_analysis',
+                'input_data' => json_encode(['stats' => $stats]),
+                'output_data' => $outputForDB,
+                'request_date' => now(),
+            ]);
+
+            return $output;
+        });
 
         return response()->json([
             'success' => true,
-            'analysis' => $output,
+            'analysis' => $result,
         ]);
     }
 }
