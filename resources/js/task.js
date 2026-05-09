@@ -21,30 +21,42 @@ window.closeTaskModal = function () {
     if (window.location.pathname === '/dashboard' && window.currentProjectId) {
         const currentSortField = currentSort?.field;
         const currentSortDirection = currentSort?.direction;
+        const currentView = window.currentView || 'list';
 
-        fetch(`/dashboard?project_id=${window.currentProjectId}&view=${window.currentView || 'list'}`)
+        fetch(`/dashboard?project_id=${window.currentProjectId}&view=${currentView}`)
             .then(res => res.text())
             .then(html => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                const newTasksHtml = doc.querySelector('.tasks-table-container')?.innerHTML;
-                if (newTasksHtml) {
-                    document.querySelector('.tasks-table-container').innerHTML = newTasksHtml;
 
-                    if (typeof initSorting === 'function') {
-                        initSorting();
+                // Обновляем в зависимости от текущего режима просмотра
+                if (currentView === 'list') {
+                    // Обновляем таблицу
+                    const newTasksHtml = doc.querySelector('.tasks-table-container')?.innerHTML;
+                    if (newTasksHtml) {
+                        document.querySelector('.tasks-table-container').innerHTML = newTasksHtml;
+
+                        if (typeof initSorting === 'function') {
+                            initSorting();
+                        }
+
+                        if (currentSortField && typeof sortTasks === 'function') {
+                            currentSort.field = currentSortField;
+                            currentSort.direction = currentSortDirection;
+                            sortTasks(currentSortField);
+                        }
                     }
+                } else if (currentView === 'kanban') {
+                    // Обновляем канбан-доску
+                    const newKanbanHtml = doc.querySelector('.kanban-board')?.innerHTML;
+                    if (newKanbanHtml) {
+                        document.querySelector('.kanban-board').innerHTML = newKanbanHtml;
 
-                    if (currentSortField && typeof sortTasks === 'function') {
-                        currentSort.field = currentSortField;
-                        currentSort.direction = currentSortDirection;
-                        sortTasks(currentSortField);
+                        // Перепривязываем обработчики удаления
+                        if (typeof bindDeleteButtons === 'function') {
+                            bindDeleteButtons();
+                        }
                     }
-                }
-
-                const newKanbanHtml = doc.querySelector('.kanban-board')?.innerHTML;
-                if (newKanbanHtml) {
-                    document.querySelector('.kanban-board').innerHTML = newKanbanHtml;
                 }
 
                 if (typeof bindDeleteButtons === 'function') {
@@ -139,7 +151,7 @@ function renderTaskModal(task) {
 
     // История
     if (task.history && Array.isArray(task.history)) {
-        renderHistory([...task.history].reverse());
+        renderHistory(task.history);
     } else {
         fetchTaskHistory(task.id);
     }
@@ -432,7 +444,10 @@ function renderHistory(history) {
         container.innerHTML = '<div class="placeholder-text">История пуста</div>';
         return;
     }
-    container.innerHTML = history.map(h => {
+
+    const sortedHistory = [...history].sort((a, b) => b.id - a.id);
+
+    container.innerHTML = sortedHistory.map(h => {
         const fieldName = getFieldName(h.changed_field);
         const oldVal = translateField(h.changed_field, h.old_value);
         const newVal = translateField(h.changed_field, h.new_value);
@@ -441,7 +456,6 @@ function renderHistory(history) {
             <div class="history-user">${escapeHtml(h.user.name)}</div>
             <div class="history-date">${h.change_date}</div>
             <div class="history-text">
-                ${h.name ? `в задаче «${escapeHtml(h.name)}» ` : ''}
                 Изменил(а) ${fieldName}: 
                 "${oldVal}" → "${newVal}"
             </div>
@@ -553,6 +567,9 @@ document.getElementById('taskAssigneeSelect')?.addEventListener('change', functi
 
 function syncTaskUsers() {
     updateTaskField('user_ids', taskSelectedUsers.map(u => u.id));
+    setTimeout(() => {
+        fetchTaskHistory(window.currentTaskId);
+    }, 300);
 }
 function loadTaskAssignees(allUsers) {
     const select = document.getElementById('taskAssigneeSelect');
@@ -592,16 +609,22 @@ function updateTaskField(field, value) {
         })
         .then(data => {
             if (data.success && data.task) {
+                // Обновляем локально
                 updateTaskInDashboard(data.task);
 
+                // Обновляем бейджи в модалке
                 const badge = document.getElementById('taskPriorityBadge');
                 if (badge) badge.className = `task-priority-badge priority-${data.task.priority}`;
 
                 const statusBadge = document.getElementById('taskStatusBadge');
                 if (statusBadge) statusBadge.innerText = translateStatus(data.task.status);
 
-                if (data.task.history) {
-                    renderHistory([...data.task.history].reverse());
+                // Обновляем историю
+                if (data.task.history && Array.isArray(data.task.history)) {
+                    const sortedHistory = [...data.task.history].sort((a, b) => {
+                        return new Date(b.change_date) - new Date(a.change_date);
+                    });
+                    renderHistory(sortedHistory);
                 }
 
                 showMessage(data.message || 'Обновлено', false);
@@ -614,17 +637,6 @@ function updateTaskField(field, value) {
             console.error(err);
             showMessage('Ошибка соединения', true);
         });
-}
-
-function fetchTaskHistory(taskId) {
-    fetch(`/tasks/${taskId}/history`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.history) {
-                renderHistory([...data.history].reverse());
-            }
-        })
-        .catch(err => console.error('Ошибка загрузки истории:', err));
 }
 
 // ========== ОПИСАНИЕ ==========
@@ -907,54 +919,136 @@ document.getElementById('submitNewTaskBtn')?.addEventListener('click', function 
 });
 
 function updateTaskInDashboard(task) {
-    const tableRow = document.querySelector(`.tasks-table tbody tr[data-task-id="${task.id}"]`);
-    if (tableRow) {
-        tableRow.querySelector('.task-name').innerText = task.name;
+    const currentView = window.currentView || 'list';
 
-        // Исполнители
-        const assigneeCell = tableRow.querySelector('td:nth-child(2)');
-        assigneeCell.innerHTML = task.user_ids.map(id => {
-            const user = task.available_users.find(u => u.id === id);
-            return `<span class="assignee">${user?.name || ''}</span>`;
-        }).join('');
+    if (currentView === 'list') {
+        // Обновление в таблице
+        const tableRow = document.querySelector(`.tasks-table tbody tr[data-task-id="${task.id}"]`);
+        if (tableRow) {
+            const taskNameCell = tableRow.querySelector('.task-name');
+            if (taskNameCell) taskNameCell.innerText = task.name;
 
-        // Статус
-        const statusBadge = tableRow.querySelector('.status-badge');
-        statusBadge.className = `status-badge status-${task.status}`;
-        statusBadge.innerText = translateStatus(task.status);
+            // Исполнители
+            const assigneeCell = tableRow.querySelector('td:nth-child(2)');
+            if (assigneeCell) {
+                assigneeCell.innerHTML = (task.user_ids || []).map(id => {
+                    const user = (task.available_users || []).find(u => u.id === id);
+                    return `<span class="assignee">${user?.name || ''}</span>`;
+                }).join('');
+            }
 
-        // Приоритет
-        const priorityBadge = tableRow.querySelector('.priority-badge');
-        priorityBadge.className = `priority-badge priority-${task.priority}`;
-        priorityBadge.innerText = translatePriority(task.priority);
+            // Статус
+            const statusBadge = tableRow.querySelector('.status-badge');
+            if (statusBadge) {
+                statusBadge.className = `status-badge status-${task.status}`;
+                statusBadge.innerText = translateStatus(task.status);
+            }
 
-        // Дата
-        const dueDateCell = tableRow.querySelector('td:nth-child(5)');
-        dueDateCell.innerText = task.due_date || '—';
-        dueDateCell.className = task.due_date && task.due_date < new Date().toISOString().split('T')[0] ? 'overdue' : '';
+            // Приоритет
+            const priorityBadge = tableRow.querySelector('.priority-badge');
+            if (priorityBadge) {
+                priorityBadge.className = `priority-badge priority-${task.priority}`;
+                priorityBadge.innerText = translatePriority(task.priority);
+            }
 
-        // Дата обновления
-        const updatedCell = tableRow.querySelector('td:nth-child(6)');
-        updatedCell.innerText = new Date().toLocaleDateString('ru-RU');
-    }
+            // Дата
+            const dueDateCell = tableRow.querySelector('td:nth-child(5)');
+            if (dueDateCell) {
+                dueDateCell.innerText = task.due_date || '—';
+                const today = new Date().toISOString().split('T')[0];
+                dueDateCell.className = task.due_date && task.due_date < today ? 'overdue' : '';
+            }
 
-    const kanbanCard = document.querySelector(`.kanban-card[data-task-id="${task.id}"]`);
-    if (kanbanCard) {
-        kanbanCard.querySelector('.card-title').innerText = task.name;
-        const prioritySpan = kanbanCard.querySelector('.priority-badge, .priority-low, .priority-medium, .priority-high');
-        if (prioritySpan) {
-            prioritySpan.className = `priority-${task.priority}`;
-            prioritySpan.innerText = task.priority;
+            // Дата обновления
+            const updatedCell = tableRow.querySelector('td:nth-child(6)');
+            if (updatedCell) {
+                updatedCell.innerText = new Date().toLocaleDateString('ru-RU');
+            }
         }
-        const dueSpan = kanbanCard.querySelector('.due-date');
-        if (dueSpan) dueSpan.innerText = task.due_date || '—';
+    } else if (currentView === 'kanban') {
+        // Находим карточку
+        let kanbanCard = document.querySelector(`.kanban-card[data-task-id="${task.id}"]`);
 
-        const newColumn = document.querySelector(`.kanban-column[data-status="${task.status}"] .kanban-tasks`);
-        if (newColumn && !newColumn.contains(kanbanCard)) {
-            kanbanCard.remove();
-            newColumn.appendChild(kanbanCard);
+        // Если карточки нет, возможно, она в другой колонке - ищем везде
+        if (!kanbanCard) {
+            kanbanCard = document.querySelector(`.kanban-card[onclick*="openTaskCard(${task.id})"]`);
+        }
+
+        if (kanbanCard) {
+            // Обновляем название
+            const titleElement = kanbanCard.querySelector('.card-title');
+            if (titleElement) titleElement.innerText = task.name;
+
+            // Обновляем приоритет
+            const prioritySpan = kanbanCard.querySelector('[class*="priority-"]');
+            if (prioritySpan) {
+                // Удаляем все классы приоритета
+                prioritySpan.classList.remove('priority-low', 'priority-medium', 'priority-high');
+                prioritySpan.classList.add(`priority-${task.priority}`);
+                prioritySpan.innerText = task.priority;
+            }
+
+            // Обновляем дату
+            const dueSpan = kanbanCard.querySelector('.due-date');
+            if (dueSpan) dueSpan.innerText = task.due_date || '—';
+
+            // Если статус изменился - перемещаем карточку
+            const currentColumn = kanbanCard.closest('.kanban-column');
+            const currentStatus = currentColumn ? currentColumn.getAttribute('data-status') : null;
+
+            if (currentStatus !== task.status) {
+                const targetColumn = document.querySelector(`.kanban-column[data-status="${task.status}"] .kanban-tasks`);
+                if (targetColumn) {
+                    // Удаляем карточку из текущей колонки и добавляем в новую
+                    kanbanCard.remove();
+                    targetColumn.appendChild(kanbanCard);
+
+                    // Обновляем счетчики
+                    updateKanbanCounters();
+
+                    // Показываем сообщение о перемещении
+                    showMessage(`Задача перемещена в "${translateStatus(task.status)}"`, false);
+                }
+            }
+        } else {
+            // Если карточка не найдена, возможно, задача была создана недавно
+            console.log('Card not found for task', task.id, 'refreshing kanban...');
+            // Перезагружаем только канбан
+            refreshKanbanOnly();
         }
     }
+}
+
+// Функция для перезагрузки только канбана
+function refreshKanbanOnly() {
+    if (window.currentProjectId && window.currentView === 'kanban') {
+        fetch(`/dashboard?project_id=${window.currentProjectId}&view=kanban`)
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newKanbanHtml = doc.querySelector('.kanban-board')?.innerHTML;
+                if (newKanbanHtml) {
+                    document.querySelector('.kanban-board').innerHTML = newKanbanHtml;
+                    if (typeof bindDeleteButtons === 'function') {
+                        bindDeleteButtons();
+                    }
+                }
+            })
+            .catch(err => console.error('Error refreshing kanban:', err));
+    }
+}
+
+// Функция для обновления счетчиков в канбане
+function updateKanbanCounters() {
+    document.querySelectorAll('.kanban-column').forEach(column => {
+        const tasksContainer = column.querySelector('.kanban-tasks');
+        const tasksCount = tasksContainer ? tasksContainer.querySelectorAll('.kanban-card').length : 0;
+        const counterSpan = column.querySelector('.kanban-count');
+        if (counterSpan) {
+            counterSpan.innerText = tasksCount;
+        }
+    });
 }
 
 function translatePriority(priority) {
