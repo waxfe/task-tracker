@@ -14,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
+// Листинг модели пользователя
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+// Листинг модели комментария
 class Comment extends Model
 {
     protected $primaryKey = 'comment_id';

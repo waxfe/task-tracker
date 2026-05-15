@@ -85,4 +85,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/ai-chat', [AiChatController::class, 'sendMessage'])->name('ai-chat.send');
     Route::delete('/ai-chat/history', [AiChatController::class, 'clearHistory'])->name('ai-chat.clear');
 
+
+    Route::post('/load-test-task', function () {
+        return \App\Models\Task::create([
+            'name' => 'Load test task',
+            'project_id' => 1,
+            'status' => 'todo',
+            'priority' => 'medium',
+        ]);
+    });
 });

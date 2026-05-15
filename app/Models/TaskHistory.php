@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+// Листинг модели истории
 class TaskHistory extends Model
 {
     protected $primaryKey = 'history_id';

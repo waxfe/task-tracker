@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
 
+// Листинг теста ИИ-сервиса
 class AiServiceTest extends TestCase
 {
     use RefreshDatabase;

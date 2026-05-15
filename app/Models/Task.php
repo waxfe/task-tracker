@@ -6,6 +6,7 @@ use App\Models\Comment as ModelsComment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+// Листинг модели задачи
 class Task extends Model
 {
     use HasFactory;

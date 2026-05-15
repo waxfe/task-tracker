@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+// Листинг модели ИИ-взаимодействия
 class AiInteraction extends Model
 {
     protected $primaryKey = 'ai_id';
